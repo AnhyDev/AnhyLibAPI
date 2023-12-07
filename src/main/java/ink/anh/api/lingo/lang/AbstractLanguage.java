@@ -4,8 +4,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import ink.anh.api.LibraryManager;
 import ink.anh.api.messages.Logger;
-import ink.anh.lingo.AnhyLingo;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -30,10 +30,12 @@ public abstract class AbstractLanguage<T> {
 
     protected Map<String, Map<String, T>> data = new HashMap<>();
     private String directory;
+    private LibraryManager libraryManager;
 
-    public AbstractLanguage(Plugin plugin, String directory) {
-        this.plugin = plugin;
+    public AbstractLanguage(LibraryManager libraryManager, String directory) {
+        this.plugin = libraryManager.getPlugin();
         this.directory = directory;
+        this.libraryManager = libraryManager;
         saveDefaultLang();
         loadLanguages();
     }
@@ -109,7 +111,7 @@ public abstract class AbstractLanguage<T> {
             return null;
         }
 
-        String defaultLanguage = AnhyLingo.getInstance().getConfigurationManager().getDefaultLang();
+        String defaultLanguage = libraryManager.getDefaultLang();
         boolean defaultLangChecked = false;
         boolean englishLangChecked = false;
 

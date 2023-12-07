@@ -56,7 +56,7 @@
         </plugins>
     </build>
 
-    <repositories>
+   <repositories>
         <!-- Spigot Maven repository -->
         <repository>
             <id>spigot-repo</id>
@@ -67,10 +67,21 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <!-- Additional repository -->
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
     </repositories>
  
     <dependencies>
         <!-- Dependencies -->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>5.0.0</version>
+            <scope>provided</scope>
+        </dependency>
         
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -85,6 +96,20 @@
             <version>1.20.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Інші залежності -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-api</artifactId>
+            <version>4.14.0</version>
+        </dependency>
+        
+		<!-- https://mvnrepository.com/artifact/net.kyori/adventure-platform-bukkit -->
+		<dependency>
+    		<groupId>net.kyori</groupId>
+    		<artifactId>adventure-platform-bukkit</artifactId>
+    		<version>4.3.1</version>
+		</dependency>
 
     </dependencies>
 </project>

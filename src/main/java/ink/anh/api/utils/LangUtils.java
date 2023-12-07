@@ -2,16 +2,17 @@ package ink.anh.api.utils;
 
 import org.bukkit.entity.Player;
 
+import ink.anh.api.LibraryManager;
 import ink.anh.api.player.PlayerData;
 
 public class LangUtils {
 
 
-    public static String[] getPlayerLanguage(Player player) {
+    public static String[] getPlayerLanguage(Player player, LibraryManager manager) {
     	String[] lang;
     	String langData = "Lingo";
     	
-    	PlayerData data = new PlayerData();
+    	PlayerData data = new PlayerData(manager.getPlugin());
     	if (data.hasCustomData(player, langData)) {
     		lang = data.getCustomData(player, langData);
     	} else {

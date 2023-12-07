@@ -9,25 +9,15 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import ink.anh.api.LibraryManager;
 import ink.anh.api.lingo.Translator;
-import ink.anh.api.lingo.lang.LanguageManager;
 import ink.anh.api.utils.LangUtils;
-import ink.anh.lingo.AnhyLingo;
 
 public class Messenger {
-
-	private static BukkitAudiences bukkitAudiences;
-	private static LanguageManager languageManager;
-
-	static {
-		bukkitAudiences = AnhyLingo.getBukkitAudiences();
-		languageManager = AnhyLingo.getInstance().getLanguageSystemChat();
-	}
 	
-	public static void sendMessage(Plugin plugin, CommandSender sender, String message, MessageType type) {
-	    String pluginName = "[" + AnhyLingo.getInstance().getConfigurationManager().getPluginName() + "] ";
-	    String coloredMessage = Translator.translateKyeWorld(message, getPlayerLanguage(sender), languageManager);
+	public static void sendMessage(Plugin plugin, CommandSender sender, String message, MessageType type, LibraryManager libraryManager) {
+	    String pluginName = "[" + libraryManager.getPluginName() + "] ";
+	    String coloredMessage = Translator.translateKyeWorld(libraryManager, message, getPlayerLanguage(sender, libraryManager));
 
 	    if (sender instanceof Player) {
 	        Player player = (Player) sender;
@@ -40,31 +30,31 @@ public class Messenger {
 	                                             .color(color)
 	                                             .decoration(TextDecoration.BOLD, false); // Вимкнути жирний шрифт для тексту повідомлення
 
-	        bukkitAudiences.sender(player).sendMessage(pluginNameComponent.append(messageComponent));
+	        libraryManager.getBukkitAudiences().sender(player).sendMessage(pluginNameComponent.append(messageComponent));
 	    } else {
 	        sendConsole(plugin, coloredMessage, type);
 	    }
 	}
 
-    public static void sendMessageSimple(Plugin plugin, CommandSender sender, String message, String icon, MessageType type) {
-        String coloredMessage = Translator.translateKyeWorld(icon + message, getPlayerLanguage(sender), languageManager);
+    public static void sendMessageSimple(Plugin plugin, CommandSender sender, String message, String icon, MessageType type, LibraryManager libraryManager) {
+        String coloredMessage = Translator.translateKyeWorld(libraryManager, icon + message, getPlayerLanguage(sender, libraryManager));
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
             TextColor color = TextColor.fromCSSHexString(type.getColor(true));
             Component messageComponent = Component.text(coloredMessage)
                                                  .color(color);
-            bukkitAudiences.sender(player).sendMessage(messageComponent);
+            libraryManager.getBukkitAudiences().sender(player).sendMessage(messageComponent);
         } else {
         	sendConsole(plugin, coloredMessage, type);
         }
     }
     
-    public static void sendShowFolder(Plugin plugin, CommandSender sender, String patch, String folder, String icon, MessageType type, String[] langs) {
+    public static void sendShowFolder(Plugin plugin, CommandSender sender, String patch, String folder, String icon, MessageType type, String[] langs, LibraryManager libraryManager) {
         // Перевіряємо, чи patch закінчується на слеш, і додаємо слеш, якщо потрібно
         String separator = (patch.endsWith("/")) ? "" : "/";
         String command = "/lingo dir " + patch + separator + folder;
-        String showFolder = Translator.translateKyeWorld("lingo_file_show_folder_contents ", langs, languageManager);
+        String showFolder = Translator.translateKyeWorld(libraryManager, "lingo_file_show_folder_contents ", langs);
         
         // Створюємо компонент для спливаючого тексту з жовтим кольором
         TextColor hoverTextColor = TextColor.fromCSSHexString("#FFFF00");
@@ -80,11 +70,11 @@ public class Messenger {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             
-            bukkitAudiences.sender(player).sendMessage(folderComponent);
+            libraryManager.getBukkitAudiences().sender(player).sendMessage(folderComponent);
 
         } else {
             // Для консолі виводимо просте повідомлення без інтерактивності
-            String coloredFolder = Translator.translateKyeWorld(icon + folder, null, languageManager);
+            String coloredFolder = Translator.translateKyeWorld(libraryManager, icon + folder, null);
             sendConsole(plugin, coloredFolder, type);
         }
     }
@@ -107,9 +97,7 @@ public class Messenger {
         }
     }
     
-
-    
-    private static String[] getPlayerLanguage(CommandSender sender) {
-    	return ((sender instanceof Player)) ? LangUtils.getPlayerLanguage((Player) sender) : null;
+    private static String[] getPlayerLanguage(CommandSender sender, LibraryManager libraryManager) {
+    	return ((sender instanceof Player)) ? LangUtils.getPlayerLanguage((Player) sender, libraryManager) : null;
     }
 }

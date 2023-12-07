@@ -1,13 +1,12 @@
 package ink.anh.api.lingo;
 
+import ink.anh.api.LibraryManager;
 import ink.anh.api.lingo.lang.LanguageManager;
-import ink.anh.lingo.AnhyLingo;
-import ink.anh.lingo.listeners.protocol.ModificationState;
 
 public class Translator {
 	
-	public static ModificationState translateKyeWorldModificationState(String text, String[] langs, LanguageManager langMan, ModificationState state) {
-		String newText = translateKyeWorld(text, langs, langMan);
+	public static ModificationState translateKyeWorldModificationState(LibraryManager libraryManager, String text, String[] langs, LanguageManager langMan, ModificationState state) {
+		String newText = translateKyeWorld(libraryManager, text, langs);
 		if (!newText.equals(text)) {
 			state.setModified(true);
 			state.setTranslatedText(newText);
@@ -15,16 +14,17 @@ public class Translator {
 		return state;
 	}
 	
-	public static String translateKyeWorld(String text, String[] langs, LanguageManager langMan) {
+	public static String translateKyeWorld(LibraryManager libraryManager, String text, String[] langs) {
 	    String newText = null;
-	    AnhyLingo lingoPlugin = AnhyLingo.getInstance();
 	    
-	    if (lingoPlugin == null) {
+	    if (libraryManager == null) {
 	        return text;
 	    }
+	    
+	    LanguageManager langMan = libraryManager.getLanguageManager();
 
-	    if ((langs == null || langs.length == 0) && lingoPlugin.getConfigurationManager() != null) {
-	    	langs = new String[]{lingoPlugin.getConfigurationManager().getDefaultLang()};
+	    if ((langs == null || langs.length == 0)) {
+	    	langs = new String[]{libraryManager.getDefaultLang()};
 	    }
 
 	    if ((langs == null || langs.length == 0)) {

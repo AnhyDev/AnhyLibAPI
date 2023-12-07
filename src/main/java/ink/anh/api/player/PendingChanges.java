@@ -9,17 +9,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.persistence.PersistentDataType;
-
-import ink.anh.lingo.AnhyLingo;
+import org.bukkit.plugin.Plugin;
 
 // Клас для зберігання запланованих змін
 // Клас поки не використовується, заготовка на майбутнє
 public class PendingChanges {
 
-    private AnhyLingo lingoPlugin;
+    private Plugin plugin;
 
-    public PendingChanges() {
-        this.lingoPlugin = AnhyLingo.getInstance();
+    public PendingChanges(Plugin plugin) {
+        this.plugin = plugin;
     }
     
     private static final Map<UUID, Map<String, String>> pendingChanges = new HashMap<>();
@@ -36,21 +35,21 @@ public class PendingChanges {
         if (pendingChanges.containsKey(playerUUID)) {
             Map<String, String> changes = pendingChanges.get(playerUUID);
             for (Map.Entry<String, String> entry : changes.entrySet()) {
-                NamespacedKey key = new NamespacedKey(lingoPlugin, entry.getKey());
+                NamespacedKey key = new NamespacedKey(plugin, entry.getKey());
                 player.getPersistentDataContainer().set(key, PersistentDataType.STRING, entry.getValue());
             }
             pendingChanges.remove(playerUUID); // Видалення застосованих змін
         }
     }
     public void setOfflinePlayerCustomData(UUID playerUUID, String dataKey, String[] values) {
-        Bukkit.getScheduler().runTaskAsynchronously(lingoPlugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
             if (offlinePlayer.hasPlayedBefore()) {
-                Bukkit.getScheduler().runTask(lingoPlugin, () -> {
+                Bukkit.getScheduler().runTask(plugin, () -> {
                     Player player = offlinePlayer.getPlayer();
                     if (player != null) {
                         // Гравець в мережі, можна змінити дані
-                        new PlayerData().setCustomData(player, dataKey, values);
+                        new PlayerData(plugin).setCustomData(player, dataKey, values);
                     } else {
                         // Гравець офлайн, додаємо зміни до списку запланованих змін
                         addChange(playerUUID, dataKey, values);

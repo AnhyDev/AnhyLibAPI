@@ -24,8 +24,6 @@ import net.md_5.bungee.chat.ScoreComponentSerializer;
 import net.md_5.bungee.chat.SelectorComponentSerializer;
 import net.md_5.bungee.chat.TextComponentSerializer;
 import net.md_5.bungee.chat.TranslatableComponentSerializer;
-import ink.anh.api.messages.Logger;
-import ink.anh.lingo.AnhyLingo;
 
 public class SpigotUtils {
 
@@ -63,8 +61,7 @@ public class SpigotUtils {
                 }
             }
         } catch (Throwable e) {
-        	if (AnhyLingo.getInstance().getConfigurationManager().isDebugPacketShat())
-        		Logger.error(AnhyLingo.getInstance(), "Unable to disableHtmlEscaping for SpigotComponentSerializer:" + e);
+        	
         }
         serializer = temp;
     }
@@ -76,7 +73,7 @@ public class SpigotUtils {
             } else {
                 return serializer.toJson(new TextComponent(components));
             }
-        } catch (Throwable t) {
+        } catch (Throwable t) { 
             // ComponentSerializer Gson may be modified during Runtime.
             return ComponentSerializer.toString(components);
         }

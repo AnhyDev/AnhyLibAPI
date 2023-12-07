@@ -5,28 +5,25 @@ import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 
+import ink.anh.api.LibraryManager;
 import ink.anh.api.nbt.NBTExplorer;
-import ink.anh.lingo.AnhyLingo;
 
 public class TranslateItemStack {
 
-    private AnhyLingo lingoPlugin;
     private String lang_NBT;
     private String key_NBT;
     
     
-	public TranslateItemStack(AnhyLingo lingoPlugin) {
-		this.lingoPlugin = lingoPlugin;
+	public TranslateItemStack() {
 		this.lang_NBT = "Lingo";
 		this.key_NBT = "ItemLingo";
 	}
 
 
-    public void modifyItem(String[] langs, ItemStack item) {
+    public void modifyItem(String[] langs, ItemStack item, LibraryManager libraryManager) {
 
         if (langs == null) {
             return;
@@ -41,7 +38,7 @@ public class TranslateItemStack {
             String customID = String.valueOf(compound.getValue(key_NBT).getValue());
 
             // Якщо customID існує в нашому словнику, ми змінюємо ім'я та лор предмета
-            if (lingoPlugin.getLanguageItemStack().dataContainsKey(customID, langs)) {
+            if (libraryManager.getLanguageItemStack().dataContainsKey(customID, langs)) {
             	ItemLang itemLang = null;
             	boolean processed = false;
 
@@ -51,7 +48,7 @@ public class TranslateItemStack {
                     
                     for (String currentLang : langs) {
                     	
-                        itemLang = lingoPlugin.getLanguageItemStack().getTranslate(customID, currentLang);
+                        itemLang = libraryManager.getLanguageItemStack().getTranslate(customID, currentLang);
 
                         if (langID.equals(currentLang)) {
                         	processed = true;
@@ -64,7 +61,7 @@ public class TranslateItemStack {
                     }
                 }
                 if (!processed) {
-                	itemLang = lingoPlugin.getLanguageItemStack().getData(customID, langs);
+                	itemLang = libraryManager.getLanguageItemStack().getData(customID, langs);
                 	translateItemStack(item, itemLang);
                 }
             }
