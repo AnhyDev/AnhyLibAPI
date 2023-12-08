@@ -44,7 +44,7 @@ To include AnhyLibAPI in your Maven project, insert these lines into your `pom.
 
 ```xml
     <repositories>
-        repository>
+        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
