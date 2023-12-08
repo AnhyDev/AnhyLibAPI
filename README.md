@@ -14,7 +14,7 @@ Developers are offered a suite of flexible and easily integrated components for 
 *   **Extensibility:** The classes are designed with the possibility of easy extension, ensuring flexibility for future plugin development.
 
 
-Use the AnhyLingo plugin in your project as a dependency. Here are the instructions for adding the plugin using Gradle and Maven.
+##### Use the AnhyLibAPI library in your project as a dependency. Here are the instructions for adding the plugin using Gradle and Maven.
 
 #### Adding Using Gradle
 
