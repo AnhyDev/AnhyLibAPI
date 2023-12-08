@@ -13,6 +13,7 @@ Developers are offered a suite of flexible and easily integrated components for 
 *   **Component Serialization:** {@code PaperUtils} and {@code SpigotUtils} provide tools for working with text components, including their serialization and deserialization.
 *   **Extensibility:** The classes are designed with the possibility of easy extension, ensuring flexibility for future plugin development.
 
+# API
 
 ##### Use the AnhyLibAPI library in your project as a dependency. Here are the instructions for adding the plugin using Gradle and Maven.
 
