@@ -19,7 +19,7 @@ Developers are offered a suite of flexible and easily integrated components for 
 
 #### Adding Using Gradle
 
-To use AnhyLingo in your Gradle project, add the following lines to your project's `build.gradle` file:
+To use AnhyLibAPI in your Gradle project, add the following lines to your project's `build.gradle` file:
 
 
 ```groovy
@@ -40,7 +40,7 @@ To use AnhyLingo in your Gradle project, add the following lines to your project
 
 #### Adding Using Maven
 
-To include AnhyLingo in your Maven project, insert these lines into your `pom.xml` file:
+To include AnhyLibAPI in your Maven project, insert these lines into your `pom.xml` file:
 
 ```xml
     <repositories>
