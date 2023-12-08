@@ -7,27 +7,65 @@ import ink.anh.api.lingo.item.LanguageItemStack;
 import ink.anh.api.lingo.lang.LanguageManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
+/**
+ * Interface defining the management of various aspects of a plugin, including localization, configuration, and user interfaces.
+ * Must be implemented in a plugin that uses the AnhyLibAPI library
+ */
 public interface LibraryManager {
 
+    /**
+     * Gets the plugin instance.
+     *
+     * @return The plugin instance.
+     */
     public abstract Plugin getPlugin();
 
-    // Отримання назви плагіну
+    /**
+     * Retrieves the name of the plugin.
+     *
+     * @return The name of the plugin.
+     */
     public abstract String getPluginName();
 
-    // Управління інтерфейсом користувача та повідомленнями
+    /**
+     * Manages user interfaces and messaging systems.
+     *
+     * @return An instance of BukkitAudiences for handling messaging and user interfaces.
+     */
     public abstract BukkitAudiences getBukkitAudiences();
 
-    // Робота з локалізацією та мовами
+    /**
+     * Handles localization and language management.
+     *
+     * @return An instance of LanguageManager for managing languages.
+     */
     public abstract LanguageManager getLanguageManager();
 
-    // Отримання мови за замовчуванням
+    /**
+     * Retrieves the default language set for the plugin.
+     *
+     * @return The default language code.
+     */
     public abstract String getDefaultLang();
     
+    /**
+     * Provides access to the stack handling language-specific item configurations.
+     *
+     * @return An instance of LanguageItemStack for managing item localizations.
+     */
     public abstract LanguageItemStack getLanguageItemStack();
 
-    // Переклад предметів у інвентарі
+    /**
+     * Retrieves localized information for items in the inventory.
+     *
+     * @return An instance of ItemLang representing the translated item.
+     */
     public abstract ItemLang getTranslateItemStack();
 
-    // Управління налаштуваннями та конфігурацією
+    /**
+     * Manages settings and configuration, specifically for debug purposes.
+     *
+     * @return True if the debug mode is enabled, false otherwise.
+     */
     public abstract boolean isDebug();
 }

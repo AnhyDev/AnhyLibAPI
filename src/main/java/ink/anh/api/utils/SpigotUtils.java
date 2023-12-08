@@ -25,8 +25,10 @@ import net.md_5.bungee.chat.SelectorComponentSerializer;
 import net.md_5.bungee.chat.TextComponentSerializer;
 import net.md_5.bungee.chat.TranslatableComponentSerializer;
 
+/**
+ * Utility class for handling serialization and comparison of BungeeCord's BaseComponents.
+ */
 public class SpigotUtils {
-
 
     private static final Gson serializer;
 
@@ -37,23 +39,25 @@ public class SpigotUtils {
                 if (declaredField.getType() == Gson.class) {
                     declaredField.setAccessible(true);
                     temp = (Gson) declaredField.get(null);
+                    // Attempt to use the existing Gson instance or create a new one with custom adapters
                     try {
                         temp = temp.newBuilder().disableHtmlEscaping().create();
                     } catch (NoSuchMethodError e) {
                         GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping();
+                        // Registering custom type adapters
                         try {
                             gsonBuilder.registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
-                                    .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
-                                    .registerTypeAdapter(TranslatableComponent.class, new TranslatableComponentSerializer())
-                                    .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
-                                    .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
-                                    .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
-                                    .registerTypeAdapter(Entity.class, new EntitySerializer())
-                                    .registerTypeAdapter(Text.class, new TextSerializer())
-                                    .registerTypeAdapter(Item.class, new ItemSerializer())
-                                    .registerTypeAdapter(ItemTag.class, new ItemTag.Serializer());
+                                       .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
+                                       .registerTypeAdapter(TranslatableComponent.class, new TranslatableComponentSerializer())
+                                       .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
+                                       .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
+                                       .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
+                                       .registerTypeAdapter(Entity.class, new EntitySerializer())
+                                       .registerTypeAdapter(Text.class, new TextSerializer())
+                                       .registerTypeAdapter(Item.class, new ItemSerializer())
+                                       .registerTypeAdapter(ItemTag.class, new ItemTag.Serializer());
                         } catch (NoClassDefFoundError ignored) {
-                            // Some types are not available on legacy servers.
+                            // Some types might not be available on legacy servers
                         }
                         temp = gsonBuilder.create();
                     }
@@ -61,11 +65,17 @@ public class SpigotUtils {
                 }
             }
         } catch (Throwable e) {
-        	
+            // Log or handle the exception as needed
         }
         serializer = temp;
     }
 
+    /**
+     * Serializes BaseComponent or BaseComponent array to JSON using a custom Gson serializer.
+     * 
+     * @param components The BaseComponent(s) to serialize.
+     * @return JSON string representation of the components.
+     */
     public static String serializeComponents(BaseComponent... components) {
         try {
             if (components.length == 1) {
@@ -74,11 +84,19 @@ public class SpigotUtils {
                 return serializer.toJson(new TextComponent(components));
             }
         } catch (Throwable t) { 
-            // ComponentSerializer Gson may be modified during Runtime.
+            // Fallback to the default ComponentSerializer if the custom Gson serializer fails
             return ComponentSerializer.toString(components);
         }
     }
 
+    /**
+     * Compares two arrays of BaseComponents for equality.
+     * It checks both the textual content and hover events.
+     * 
+     * @param a The first array of BaseComponents.
+     * @param b The second array of BaseComponents.
+     * @return True if the arrays are equal, false otherwise.
+     */
     @SuppressWarnings({"deprecation"})
     public static boolean compareComponents(BaseComponent[] a, BaseComponent[] b) {
         if (a == null && b != null || a != null && b == null) {
@@ -102,6 +120,4 @@ public class SpigotUtils {
         }
         return true;
     }
-
-
 }

@@ -3,39 +3,66 @@ package ink.anh.api.lingo;
 import ink.anh.api.LibraryManager;
 import ink.anh.api.lingo.lang.LanguageManager;
 
+/**
+ * Provides utilities for translating text using language management facilities.
+ */
 public class Translator {
 	
-	public static ModificationState translateKyeWorldModificationState(LibraryManager libraryManager, String text, String[] langs, LanguageManager langMan, ModificationState state) {
-		String newText = translateKyeWorld(libraryManager, text, langs);
-		if (!newText.equals(text)) {
-			state.setModified(true);
-			state.setTranslatedText(newText);
-		}
-		return state;
-	}
+    /**
+     * Translates a given text and updates the provided ModificationState.
+     * 
+     * @param libraryManager The LibraryManager instance to access language data.
+     * @param text The text to be translated.
+     * @param langs An array of language codes to consider for translation.
+     * @param langMan The LanguageManager instance to use for translation.
+     * @param state The ModificationState to be updated based on the translation.
+     * @return The updated ModificationState after translation.
+     */
+    public static ModificationState translateKyeWorldModificationState(LibraryManager libraryManager, String text, String[] langs, LanguageManager langMan, ModificationState state) {
+        String newText = translateKyeWorld(libraryManager, text, langs);
+        if (!newText.equals(text)) {
+            state.setModified(true);
+            state.setTranslatedText(newText);
+        }
+        return state;
+    }
 	
-	public static String translateKyeWorld(LibraryManager libraryManager, String text, String[] langs) {
-	    String newText = null;
-	    
-	    if (libraryManager == null) {
-	        return text;
-	    }
-	    
-	    LanguageManager langMan = libraryManager.getLanguageManager();
+    /**
+     * Translates a given text using the specified languages.
+     * 
+     * @param libraryManager The LibraryManager instance to access language data.
+     * @param text The text to be translated.
+     * @param langs An array of language codes to consider for translation.
+     * @return The translated text or the original text if no translation is found.
+     */
+    public static String translateKyeWorld(LibraryManager libraryManager, String text, String[] langs) {
+        if (libraryManager == null) {
+            return text;
+        }
 
-	    if ((langs == null || langs.length == 0)) {
-	    	langs = new String[]{libraryManager.getDefaultLang()};
-	    }
+        LanguageManager langMan = libraryManager.getLanguageManager();
 
-	    if ((langs == null || langs.length == 0)) {
-	    	langs = new String[]{"en"};
-	    }
-	    
-	    newText = processText(text, langMan, langs);
-	    return newText != null ? newText : text;
-	}
+        if (langs == null || langs.length == 0) {
+            langs = new String[]{libraryManager.getDefaultLang()};
+        }
 
-	public static String processText(String text, LanguageManager langMan, String[] langs) {
+        if (langs == null || langs.length == 0) {
+            langs = new String[]{"en"};
+        }
+        
+        String newText = processText(text, langMan, langs);
+        return newText != null ? newText : text;
+    }
+
+    /**
+     * Processes the given text, translating each word based on the specified language preferences.
+     * 
+     * @param text The text to process.
+     * @param langMan The LanguageManager instance to use for translation.
+     * @param langs An array of language codes to consider for translation.
+     * @return The translated text, or null if no translation is required.
+     */
+    public static String processText(String text, LanguageManager langMan, String[] langs) {
         boolean prependSpace = text.startsWith(" ");
         boolean appendSpace = text.endsWith(" ");
 
