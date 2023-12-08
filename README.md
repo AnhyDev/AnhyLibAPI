@@ -60,6 +60,6 @@ To include AnhyLingo in your Maven project, insert these lines into your `pom.x
 ```
 ## Documentation
 
-For a complete overview of the Javadoc documentation of our project, please visit <a href="https://dev.anh.ink/anhylibapi/javadoc/" target="_blank">this link</a>.
+For a complete overview of the Javadoc documentation of our project, please visit <a href="https://dev.anh.ink/anhylibapi/javadoc/" target="_blank">dev.anh.ink/anhylibapi/javadoc</a>.
 
 *Please note that the documentation may be updated over time, so we recommend periodically checking this link for access to the latest versions.*
