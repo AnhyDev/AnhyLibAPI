@@ -1,8 +1,8 @@
 package ink.anh.api.utils;
 
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-import ink.anh.api.LibraryManager;
 import ink.anh.api.player.PlayerData;
 
 /**
@@ -19,11 +19,11 @@ public class LangUtils {
      * @param manager The LibraryManager instance to access player data.
      * @return An array of language codes representing the player's language preferences.
      */
-    public static String[] getPlayerLanguage(Player player, LibraryManager manager) {
+    public static String[] getPlayerLanguage(Player player, Plugin plugin) {
         String[] lang;
         String langData = "Lingo";
         
-        PlayerData data = new PlayerData(manager.getPlugin());
+        PlayerData data = new PlayerData(plugin);
         if (data.hasCustomData(player, langData)) {
             lang = data.getCustomData(player, langData);
         } else {

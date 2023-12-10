@@ -27,9 +27,9 @@ public class Messenger {
      * @param type The type of message, which determines the color.
      * @param libraryManager The LibraryManager instance to access language data.
      */
-    public static void sendMessage(Plugin plugin, CommandSender sender, String message, MessageType type, LibraryManager libraryManager) {
+    public static void sendMessage(LibraryManager libraryManager, CommandSender sender, String message, MessageType type) {
         String pluginName = "[" + libraryManager.getPluginName() + "] ";
-        String coloredMessage = Translator.translateKyeWorld(libraryManager, message, getPlayerLanguage(sender, libraryManager));
+        String coloredMessage = Translator.translateKyeWorld(libraryManager, message, getPlayerLanguage(sender, libraryManager.getPlugin()));
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -44,7 +44,7 @@ public class Messenger {
 
             libraryManager.getBukkitAudiences().sender(player).sendMessage(pluginNameComponent.append(messageComponent));
         } else {
-            sendConsole(plugin, coloredMessage, type);
+            sendConsole(libraryManager.getPlugin(), coloredMessage, type);
         }
     }
 
@@ -58,8 +58,8 @@ public class Messenger {
      * @param type The type of message.
      * @param libraryManager The LibraryManager instance to access language data.
      */
-    public static void sendMessageSimple(Plugin plugin, CommandSender sender, String message, String icon, MessageType type, LibraryManager libraryManager) {
-        String coloredMessage = Translator.translateKyeWorld(libraryManager, icon + message, getPlayerLanguage(sender, libraryManager));
+    public static void sendMessageSimple(LibraryManager libraryManager, CommandSender sender, String message, String icon, MessageType type) {
+        String coloredMessage = Translator.translateKyeWorld(libraryManager, icon + message, getPlayerLanguage(sender, libraryManager.getPlugin()));
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -68,7 +68,7 @@ public class Messenger {
                                                  .color(color);
             libraryManager.getBukkitAudiences().sender(player).sendMessage(messageComponent);
         } else {
-            sendConsole(plugin, coloredMessage, type);
+            sendConsole(libraryManager.getPlugin(), coloredMessage, type);
         }
     }
     
@@ -84,7 +84,7 @@ public class Messenger {
      * @param langs The languages for translation.
      * @param libraryManager The LibraryManager instance to access language data.
      */
-    public static void sendShowFolder(Plugin plugin, CommandSender sender, String patch, String folder, String icon, MessageType type, String[] langs, LibraryManager libraryManager) {
+    public static void sendShowFolder(LibraryManager libraryManager, CommandSender sender, String patch, String folder, String icon, MessageType type, String[] langs) {
         String separator = patch.endsWith("/") ? "" : "/";
         String command = "/lingo dir " + patch + separator + folder;
         String showFolder = Translator.translateKyeWorld(libraryManager, "lingo_file_show_folder_contents ", langs);
@@ -106,7 +106,7 @@ public class Messenger {
         } else {
             // For console, send a simple message without interactivity
             String coloredFolder = Translator.translateKyeWorld(libraryManager, icon + folder, null);
-            sendConsole(plugin, coloredFolder, type);
+            sendConsole(libraryManager.getPlugin(), coloredFolder, type);
         }
     }
     
@@ -142,7 +142,7 @@ public class Messenger {
      * @param libraryManager The LibraryManager instance to access language data.
      * @return An array of language codes, or null if the sender is not a player.
      */
-    private static String[] getPlayerLanguage(CommandSender sender, LibraryManager libraryManager) {
-        return sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender, libraryManager) : null;
+    private static String[] getPlayerLanguage(CommandSender sender, Plugin plugin) {
+        return sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender, plugin) : null;
     }
 }

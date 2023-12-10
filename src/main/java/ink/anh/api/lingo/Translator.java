@@ -18,7 +18,7 @@ public class Translator {
      * @param state The ModificationState to be updated based on the translation.
      * @return The updated ModificationState after translation.
      */
-    public static ModificationState translateKyeWorldModificationState(LibraryManager libraryManager, String text, String[] langs, LanguageManager langMan, ModificationState state) {
+    public static ModificationState translateKyeWorldModificationState(LibraryManager libraryManager, String text, String[] langs, ModificationState state) {
         String newText = translateKyeWorld(libraryManager, text, langs);
         if (!newText.equals(text)) {
             state.setModified(true);
@@ -50,7 +50,7 @@ public class Translator {
             langs = new String[]{"en"};
         }
         
-        String newText = processText(text, langMan, langs);
+        String newText = processText(langMan, text, langs);
         return newText != null ? newText : text;
     }
 
@@ -62,7 +62,7 @@ public class Translator {
      * @param langs An array of language codes to consider for translation.
      * @return The translated text, or null if no translation is required.
      */
-    public static String processText(String text, LanguageManager langMan, String[] langs) {
+    public static String processText(LanguageManager langMan, String text, String[] langs) {
         boolean prependSpace = text.startsWith(" ");
         boolean appendSpace = text.endsWith(" ");
 

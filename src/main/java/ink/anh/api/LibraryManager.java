@@ -2,8 +2,6 @@ package ink.anh.api;
 
 import org.bukkit.plugin.Plugin;
 
-import ink.anh.api.lingo.item.ItemLang;
-import ink.anh.api.lingo.item.LanguageItemStack;
 import ink.anh.api.lingo.lang.LanguageManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
@@ -47,20 +45,6 @@ public interface LibraryManager {
      * @return The default language code.
      */
     public abstract String getDefaultLang();
-    
-    /**
-     * Provides access to the stack handling language-specific item configurations.
-     *
-     * @return An instance of LanguageItemStack for managing item localizations.
-     */
-    public abstract LanguageItemStack getLanguageItemStack();
-
-    /**
-     * Retrieves localized information for items in the inventory.
-     *
-     * @return An instance of ItemLang representing the translated item.
-     */
-    public abstract ItemLang getTranslateItemStack();
 
     /**
      * Manages settings and configuration, specifically for debug purposes.
