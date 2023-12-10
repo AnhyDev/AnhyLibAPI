@@ -14,7 +14,6 @@ public class Translator {
      * @param libraryManager The LibraryManager instance to access language data.
      * @param text The text to be translated.
      * @param langs An array of language codes to consider for translation.
-     * @param langMan The LanguageManager instance to use for translation.
      * @param state The ModificationState to be updated based on the translation.
      * @return The updated ModificationState after translation.
      */
@@ -57,8 +56,8 @@ public class Translator {
     /**
      * Processes the given text, translating each word based on the specified language preferences.
      * 
-     * @param text The text to process.
      * @param langMan The LanguageManager instance to use for translation.
+     * @param text The text to process.
      * @param langs An array of language codes to consider for translation.
      * @return The translated text, or null if no translation is required.
      */

@@ -21,11 +21,10 @@ public class Messenger {
     /**
      * Sends a formatted message to a CommandSender (player or console).
      *
-     * @param plugin The plugin instance.
+     * @param libraryManager The LibraryManager instance to access language data.
      * @param sender The CommandSender to whom the message will be sent.
      * @param message The message to be sent.
      * @param type The type of message, which determines the color.
-     * @param libraryManager The LibraryManager instance to access language data.
      */
     public static void sendMessage(LibraryManager libraryManager, CommandSender sender, String message, MessageType type) {
         String pluginName = "[" + libraryManager.getPluginName() + "] ";
@@ -51,12 +50,11 @@ public class Messenger {
     /**
      * Sends a simple formatted message to a CommandSender (player or console).
      *
-     * @param plugin The plugin instance.
+     * @param libraryManager The LibraryManager instance to access language data.
      * @param sender The CommandSender to whom the message will be sent.
      * @param message The message to be sent.
      * @param icon The icon to be prefixed to the message.
      * @param type The type of message.
-     * @param libraryManager The LibraryManager instance to access language data.
      */
     public static void sendMessageSimple(LibraryManager libraryManager, CommandSender sender, String message, String icon, MessageType type) {
         String coloredMessage = Translator.translateKyeWorld(libraryManager, icon + message, getPlayerLanguage(sender, libraryManager.getPlugin()));
@@ -75,14 +73,13 @@ public class Messenger {
     /**
      * Sends an interactive message for showing a folder's contents to a CommandSender.
      *
-     * @param plugin The plugin instance.
+     * @param libraryManager The LibraryManager instance to access language data.
      * @param sender The CommandSender to whom the message will be sent.
      * @param patch The patch of the folder.
      * @param folder The folder name.
      * @param icon The icon to be prefixed to the folder name.
      * @param type The type of message.
      * @param langs The languages for translation.
-     * @param libraryManager The LibraryManager instance to access language data.
      */
     public static void sendShowFolder(LibraryManager libraryManager, CommandSender sender, String patch, String folder, String icon, MessageType type, String[] langs) {
         String separator = patch.endsWith("/") ? "" : "/";
@@ -139,7 +136,7 @@ public class Messenger {
      * Retrieves the player's language preferences.
      *
      * @param sender The CommandSender, assumed to be a player.
-     * @param libraryManager The LibraryManager instance to access language data.
+     * @param plugin The plugin instance.
      * @return An array of language codes, or null if the sender is not a player.
      */
     private static String[] getPlayerLanguage(CommandSender sender, Plugin plugin) {
