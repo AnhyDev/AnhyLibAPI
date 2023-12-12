@@ -14,7 +14,6 @@ public class LangUtils {
      * Otherwise, it processes the player's locale to determine the language.
      *
      * @param player The player whose language preferences are being queried.
-     * @param plugin The plugin instance.
      * @return An array of language codes representing the player's language preferences.
      */
     public static String[] getPlayerLanguage(Player player) {

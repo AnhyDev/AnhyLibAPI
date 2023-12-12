@@ -1,25 +1,27 @@
 package ink.anh.api;
 
 import org.bukkit.plugin.Plugin;
-
 import ink.anh.api.lingo.lang.LanguageManager;
+import ink.anh.api.utils.PluginReporter;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 /**
- * Abstract class that defines the management of various aspects of a plugin, such as localization,
- * configuration, and user interfaces. This class should be extended by plugins that utilize the AnhyLibAPI library,
- * providing concrete implementations of the abstract methods defined herein.
+ * Abstract class that defines the management framework for various aspects of a plugin.
+ * This includes localization, messaging systems, language management, and configuration settings.
+ * Subclasses should provide concrete implementations for the abstract methods to tailor the functionality
+ * to their specific plugin requirements.
  */
 public abstract class LibraryManager {
-
+    
     /**
-     * Constructor for LibraryManager. It ensures that an instance of AnhyLibAPI is initialized when
-     * a subclass of LibraryManager is instantiated.
+     * Constructor for the LibraryManager. It automatically reports the name of the plugin using PluginReporter.
+     *
+     * @param plugin The plugin instance this manager is associated with.
      */
-	public LibraryManager() {
-		AnhyLibAPI.getInstance();
-	}
-	
+    public LibraryManager(Plugin plugin) {
+        new PluginReporter(plugin).reportPluginName();
+    }
+
     /**
      * Gets the plugin instance.
      *

@@ -1,47 +1,37 @@
 package ink.anh.api;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import ink.anh.api.utils.PluginReporter;
 
 /**
- * This class serves as the main entry point for the AnhyLibAPI when used as a plugin.
- * It follows the singleton pattern to ensure that only one instance of this class is created during the plugin's lifecycle.
+ * Main class for the AnhyLibAPI Bukkit/Spigot plugin.
+ * Utilizes a singleton pattern to provide a global point of access to the plugin instance
+ * and initiates reporting of the plugin's name on plugin enable.
  */
 public class AnhyLibAPI extends JavaPlugin {
 
-    /**
-     * The volatile keyword ensures that multiple threads handle the unique instance variable correctly.
-     */
-    private static volatile AnhyLibAPI instance;
+    private static AnhyLibAPI instance;
 
     /**
-     * Retrieves the singleton instance of the AnhyLibAPI.
-     * If no instance exists, it initializes a new instance. This method is thread-safe.
+     * Retrieves the active instance of the AnhyLibAPI plugin.
+     * This static method allows for a global point of access to the plugin instance.
      *
      * @return The singleton instance of AnhyLibAPI.
      */
     public static AnhyLibAPI getInstance() {
-        if (instance == null) {
-            synchronized (AnhyLibAPI.class) {
-                if (instance == null) {
-                    instance = new AnhyLibAPI();
-                }
-            }
-        }
         return instance;
     }
 
     /**
-     * Called when the plugin is enabled. If the instance is not already initialized, it sets the unique instance to 'this'.
-     * The method is synchronized to prevent multiple threads from initializing the instance simultaneously in a multithreaded environment.
+     * Initializes the plugin by setting the singleton instance and reporting the plugin name.
+     * This method is called by the Bukkit/Spigot server when the plugin is enabled.
      */
     @Override
     public void onEnable() {
-        if (instance == null) {
-            synchronized (AnhyLibAPI.class) {
-                if (instance == null) {
-                    instance = this;
-                }
-            }
-        }
+        // Set the instance for global access.
+        instance = this;
+
+        // Report the plugin name using the PluginReporter utility class.
+        new PluginReporter(this).reportPluginName();
     }
 }
