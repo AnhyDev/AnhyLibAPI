@@ -3,22 +3,21 @@ package ink.anh.api.player;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
+
+import ink.anh.api.AnhyLibAPI;
 
 /**
  * Provides functionality to manage custom data for players using the Persistent Data API.
  */
 public class PlayerData {
 
-    private Plugin plugin;
+    private AnhyLibAPI anhyLibAPI;
 
     /**
-     * Constructs a PlayerData instance associated with a specific plugin.
-     *
-     * @param plugin The plugin this PlayerData is associated with.
+     * Constructs a PlayerData instance associated with the AnhyLibAPI.
      */
-    public PlayerData(Plugin plugin) {
-        this.plugin = plugin;
+    public PlayerData() {
+        this.anhyLibAPI = AnhyLibAPI.getInstance();
     }
 
     /**
@@ -29,7 +28,7 @@ public class PlayerData {
      * @param values The array of string values to store.
      */
     public void setCustomData(Player player, String dataKey, String[] values) {
-        NamespacedKey key = new NamespacedKey(plugin, dataKey);
+        NamespacedKey key = new NamespacedKey(anhyLibAPI, dataKey);
         String combined = String.join(",", values);  // Serializing the array into a single string
         player.getPersistentDataContainer().set(key, PersistentDataType.STRING, combined);
     }
@@ -42,7 +41,7 @@ public class PlayerData {
      * @return An array of string values, or an empty array if no data is found.
      */
     public String[] getCustomData(Player player, String dataKey) {
-        NamespacedKey key = new NamespacedKey(plugin, dataKey);
+        NamespacedKey key = new NamespacedKey(anhyLibAPI, dataKey);
         String value = player.getPersistentDataContainer().get(key, PersistentDataType.STRING);
         return value != null ? value.split(",") : new String[0];  // Deserializing the string back into an array
     }
@@ -55,7 +54,7 @@ public class PlayerData {
      * @return The string value of the custom data, or null if no data is found.
      */
     public String getStringData(Player player, String dataKey) {
-        NamespacedKey key = new NamespacedKey(plugin, dataKey);
+        NamespacedKey key = new NamespacedKey(anhyLibAPI, dataKey);
         return player.getPersistentDataContainer().get(key, PersistentDataType.STRING);
     }
 
@@ -67,7 +66,7 @@ public class PlayerData {
      * @return True if the player has custom data for the given key, false otherwise.
      */
     public boolean hasCustomData(Player player, String dataKey) {
-        NamespacedKey key = new NamespacedKey(plugin, dataKey);
+        NamespacedKey key = new NamespacedKey(anhyLibAPI, dataKey);
         return player.getPersistentDataContainer().has(key, PersistentDataType.STRING);
     }
 
@@ -78,7 +77,7 @@ public class PlayerData {
      * @param dataKey The key for the custom data to be removed.
      */
     public void removeCustomData(Player player, String dataKey) {
-        NamespacedKey key = new NamespacedKey(plugin, dataKey);
+        NamespacedKey key = new NamespacedKey(anhyLibAPI, dataKey);
         player.getPersistentDataContainer().remove(key);
     }
 }

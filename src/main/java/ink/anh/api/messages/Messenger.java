@@ -28,7 +28,7 @@ public class Messenger {
      */
     public static void sendMessage(LibraryManager libraryManager, CommandSender sender, String message, MessageType type) {
         String pluginName = "[" + libraryManager.getPluginName() + "] ";
-        String coloredMessage = Translator.translateKyeWorld(libraryManager, message, getPlayerLanguage(sender, libraryManager.getPlugin()));
+        String coloredMessage = Translator.translateKyeWorld(libraryManager, message, getPlayerLanguage(sender));
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -57,7 +57,7 @@ public class Messenger {
      * @param type The type of message.
      */
     public static void sendMessageSimple(LibraryManager libraryManager, CommandSender sender, String message, String icon, MessageType type) {
-        String coloredMessage = Translator.translateKyeWorld(libraryManager, icon + message, getPlayerLanguage(sender, libraryManager.getPlugin()));
+        String coloredMessage = Translator.translateKyeWorld(libraryManager, icon + message, getPlayerLanguage(sender));
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -136,10 +136,9 @@ public class Messenger {
      * Retrieves the player's language preferences.
      *
      * @param sender The CommandSender, assumed to be a player.
-     * @param plugin The plugin instance.
      * @return An array of language codes, or null if the sender is not a player.
      */
-    private static String[] getPlayerLanguage(CommandSender sender, Plugin plugin) {
-        return sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender, plugin) : null;
+    private static String[] getPlayerLanguage(CommandSender sender) {
+        return sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : null;
     }
 }

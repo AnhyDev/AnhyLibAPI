@@ -75,7 +75,7 @@ public class PendingChanges {
                     Player player = offlinePlayer.getPlayer();
                     if (player != null) {
                         // Player is online, apply changes directly
-                        new PlayerData(plugin).setCustomData(player, dataKey, values);
+                        new PlayerData().setCustomData(player, dataKey, values);
                     } else {
                         // Player is offline, add changes to pending list
                         addChange(playerUUID, dataKey, values);

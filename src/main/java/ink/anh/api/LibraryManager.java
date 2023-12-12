@@ -6,11 +6,20 @@ import ink.anh.api.lingo.lang.LanguageManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 /**
- * Interface defining the management of various aspects of a plugin, including localization, configuration, and user interfaces.
- * Must be implemented in a plugin that uses the AnhyLibAPI library
+ * Abstract class that defines the management of various aspects of a plugin, such as localization,
+ * configuration, and user interfaces. This class should be extended by plugins that utilize the AnhyLibAPI library,
+ * providing concrete implementations of the abstract methods defined herein.
  */
-public interface LibraryManager {
+public abstract class LibraryManager {
 
+    /**
+     * Constructor for LibraryManager. It ensures that an instance of AnhyLibAPI is initialized when
+     * a subclass of LibraryManager is instantiated.
+     */
+	public LibraryManager() {
+		AnhyLibAPI.getInstance();
+	}
+	
     /**
      * Gets the plugin instance.
      *
