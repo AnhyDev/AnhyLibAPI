@@ -74,9 +74,20 @@ public class Translator {
 
         boolean textModified = false;
         for (String word : words) {
-            String replacement = langMan.getData(word, langs);
+            // Separation of punctuation at the beginning and end of a word, keeping characters that are letters, numbers or underscores
+        	String leadingPunctuation = word.replaceAll("^((?:[&§][\\da-fA-Fk-oK-OrR])|[^\\w]*)", "$1");
+        	String trailingPunctuation = word.replaceAll(".*?([^\\w]*)$", "$1");
+        	String coreWord;
+
+        	int start = leadingPunctuation.length();
+        	int end = word.length() - trailingPunctuation.length();
+        	coreWord = word.substring(start, end);
+
+            // Get a replacement for the main part of the word
+            String replacement = langMan.getData(coreWord, langs);
             if (replacement != null) {
-                newText.append(replacement);
+                // Insert punctuation back before and after replacement
+                newText.append(leadingPunctuation).append(replacement).append(trailingPunctuation);
                 textModified = true;
             } else {
                 newText.append(word);
@@ -90,4 +101,5 @@ public class Translator {
 
         return textModified ? newText.toString() : null;
     }
+
 }
