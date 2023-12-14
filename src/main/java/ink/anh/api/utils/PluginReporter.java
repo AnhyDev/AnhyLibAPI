@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import org.bukkit.scheduler.BukkitRunnable;
+
 
 import org.bukkit.plugin.Plugin;
 import ink.anh.api.messages.Logger;
@@ -30,30 +32,34 @@ public class PluginReporter {
      * Logs the response code and body to the server's console.
      */
     public void reportPluginName() {
-        try {
-            String pluginName = plugin.getDescription().getName();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    String pluginName = plugin.getDescription().getName();
+                    String jsonData = String.format("{\"plugin\":\"%s\"}", pluginName);
 
-            // Prepare the JSON string with the plugin name.
-            String jsonData = String.format("{\"plugin\":\"%s\"}", pluginName);
+                    HttpClient client = HttpClient.newHttpClient();
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(URI.create("https://dev.anh.ink/monitoring/receive-plugin-name.php"))
+                            .header("Content-Type", "application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString(jsonData))
+                            .build();
 
-            // Set up the HTTP client and construct the request.
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://dev.anh.ink/reporter/receive-plugin-name.php"))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonData))
-                    .build();
+                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // Send the data and get the response.
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // Log the results.
-            Logger.info(plugin, "Response code: " + response.statusCode());
-            Logger.info(plugin, "Response body: " + response.body());
-        } catch (Exception e) {
-            // Log severe errors if the reporting fails.
-            Logger.error(plugin, "An error occurred: " + e.getMessage());
-            e.printStackTrace();
-        }
+                    if ("1".equals(response.body())) {
+                        Logger.info(plugin, "Successfully.");
+                    } else if ("0".equals(response.body())) {
+                        Logger.error(plugin, "Failed to report plugin data.");
+                    } else {
+                        Logger.error(plugin, "Unexpected response from server");
+                    }
+                } catch (Exception e) {
+                    Logger.error(plugin, "An error occurred: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 }
