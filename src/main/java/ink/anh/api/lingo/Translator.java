@@ -77,7 +77,7 @@ public class Translator {
 
         boolean textModified = false;
         for (String word : words) {
-            if (word.length() < 5) {
+            if (word == null || word.length() < 5) {
                 newText.append(word).append(" ");
                 continue;
             }
@@ -108,7 +108,7 @@ public class Translator {
     }
 
     private static String[] extractLeadingPunctuation(String word) {
-        if (word.length() > 0 && (Character.isLetterOrDigit(word.charAt(0)) || word.charAt(0) == '_')) {
+        if (word.length() < 5 || word.length() > 4 && (Character.isLetterOrDigit(word.charAt(0)) || word.charAt(0) == '_')) {
             return new String[] {"", word};
         }
 
@@ -125,6 +125,9 @@ public class Translator {
     }
 
     private static String[] extractTrailingPunctuation(String word) {
+        if (word.length() < 5) {
+            return new String[] {"", word};
+        }
         Pattern pattern = Pattern.compile("((?:[&§][\\da-fA-Fk-oK-OrR]|\\p{Punct})+$)");
         Matcher matcher = pattern.matcher(word);
 

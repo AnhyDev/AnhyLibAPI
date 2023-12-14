@@ -172,6 +172,11 @@ public abstract class AbstractLanguage<T> {
         }
 
         String defaultLanguage = libraryManager.getDefaultLang();
+        
+        if (langs == null || langs.length == 0) {
+        	langs = new String[] {defaultLanguage};
+        }
+        
         boolean defaultLangChecked = false;
         boolean englishLangChecked = false;
 
