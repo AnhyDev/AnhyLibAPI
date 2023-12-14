@@ -1,5 +1,8 @@
 package ink.anh.api.lingo;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import ink.anh.api.LibraryManager;
 import ink.anh.api.lingo.lang.LanguageManager;
 
@@ -74,19 +77,21 @@ public class Translator {
 
         boolean textModified = false;
         for (String word : words) {
-            // Separation of punctuation at the beginning and end of a word, keeping characters that are letters, numbers or underscores
-        	String leadingPunctuation = word.replaceAll("^((?:[&§][\\da-fA-Fk-oK-OrR])|[^\\w]*)", "$1");
-        	String trailingPunctuation = word.replaceAll(".*?([^\\w]*)$", "$1");
-        	String coreWord;
+            if (word.length() < 5) {
+                newText.append(word).append(" ");
+                continue;
+            }
 
-        	int start = leadingPunctuation.length();
-        	int end = word.length() - trailingPunctuation.length();
-        	coreWord = word.substring(start, end);
+            String[] parts = extractLeadingPunctuation(word);
+            String leadingPunctuation = parts[0];
+            String remainingWord = parts[1];
 
-            // Get a replacement for the main part of the word
+            String[] trailingParts = extractTrailingPunctuation(remainingWord);
+            String trailingPunctuation = trailingParts[0];
+            String coreWord = trailingParts[1];
+
             String replacement = langMan.getData(coreWord, langs);
             if (replacement != null) {
-                // Insert punctuation back before and after replacement
                 newText.append(leadingPunctuation).append(replacement).append(trailingPunctuation);
                 textModified = true;
             } else {
@@ -102,4 +107,33 @@ public class Translator {
         return textModified ? newText.toString() : null;
     }
 
+    private static String[] extractLeadingPunctuation(String word) {
+        if (word.length() > 0 && (Character.isLetterOrDigit(word.charAt(0)) || word.charAt(0) == '_')) {
+            return new String[] {"", word};
+        }
+
+        Pattern pattern = Pattern.compile("^((?:[&§][\\da-fA-Fk-oK-OrR]|\\p{Punct})+)");
+        Matcher matcher = pattern.matcher(word);
+
+        String leadingPunctuation = "";
+        if (matcher.find()) {
+            leadingPunctuation = matcher.group();
+        }
+
+        String remainingWord = word.substring(leadingPunctuation.length());
+        return new String[] {leadingPunctuation, remainingWord};
+    }
+
+    private static String[] extractTrailingPunctuation(String word) {
+        Pattern pattern = Pattern.compile("((?:[&§][\\da-fA-Fk-oK-OrR]|\\p{Punct})+$)");
+        Matcher matcher = pattern.matcher(word);
+
+        String trailingPunctuation = "";
+        if (matcher.find()) {
+            trailingPunctuation = matcher.group();
+        }
+
+        String coreWord = word.substring(0, word.length() - trailingPunctuation.length());
+        return new String[] {trailingPunctuation, coreWord};
+    }
 }
