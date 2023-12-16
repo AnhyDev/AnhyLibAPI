@@ -2,7 +2,7 @@
 
 **AnhyLibAPI** is a library designed for integration into Minecraft plugins, developed to enhance their capabilities on servers running on Spigot, Paper, Purpur, and other Spigot forks
 
-The latest version of the **ProtocolLib**plugin is required for operation.
+**ProtocolLib** plugin version 5.0 or higher is required for operation.
 
 
 ### Key Features:
@@ -21,7 +21,7 @@ JavaDoc for AnhyLibAPI are available at the following link: [AnhyLibAPI Documen
 
 ### Integration with Gradle and Maven:
 
-##### Gradle:
+#### Gradle:
 
 ```groovy
 dependencyResolutionManagement {
@@ -38,7 +38,7 @@ dependencies {
 }
 ```
 
-##### Maven:
+#### Maven:
 
 ```xml
 <repositories>
