@@ -124,17 +124,25 @@ public abstract class AbstractLanguage<T> {
         }
 
         for (File file : files) {
-            String fileName = file.getName();
-            String lang = fileName.substring(fileName.lastIndexOf('_') + 1, fileName.lastIndexOf('.'));
+            try {
+                String fileName = file.getName();
+                String lang = fileName.substring(fileName.lastIndexOf('_') + 1, fileName.lastIndexOf('.')).toLowerCase();
 
-            FileConfiguration langConfig = YamlConfiguration.loadConfiguration(file);
-            Map<String, T> extractedData = extractData(langConfig, lang);
-
-            for (Map.Entry<String, T> entry : extractedData.entrySet()) {
-                String key = entry.getKey();
-                T value = entry.getValue();
+                if (lang.equals("uk")) {
+                    lang = "ua";
+                }
                 
-                data.computeIfAbsent(key, k -> new HashMap<>()).put(lang, value);
+                FileConfiguration langConfig = YamlConfiguration.loadConfiguration(file);
+                Map<String, T> extractedData = extractData(langConfig, lang);
+
+                for (Map.Entry<String, T> entry : extractedData.entrySet()) {
+                    String key = entry.getKey();
+                    T value = entry.getValue();
+                    
+                    data.computeIfAbsent(key, k -> new HashMap<>()).put(lang, value);
+                }
+            } catch (Exception e) {
+                Logger.error(plugin, "Error loading language file: " + file.getName() + " - " + e.getMessage());
             }
         }
     }
