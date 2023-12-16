@@ -1,5 +1,6 @@
 package ink.anh.api.lingo.lang;
 
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -132,7 +134,14 @@ public abstract class AbstractLanguage<T> {
                     lang = "ua";
                 }
                 
-                FileConfiguration langConfig = YamlConfiguration.loadConfiguration(file);
+                String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+                FileConfiguration langConfig = new YamlConfiguration();
+                try {
+                    langConfig.loadFromString(content);
+                } catch (InvalidConfigurationException e) {
+                    Logger.error(plugin, "Invalid YAML format in file: " + file.getName() + " - " + e.getMessage());
+                    continue;
+                }
                 Map<String, T> extractedData = extractData(langConfig, lang);
 
                 for (Map.Entry<String, T> entry : extractedData.entrySet()) {
