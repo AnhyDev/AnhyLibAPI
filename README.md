@@ -2,7 +2,7 @@
 
 **AnhyLibAPI** is a library designed for integration into Minecraft plugins, developed to enhance their capabilities on servers running on Spigot, Paper, Purpur, and other Spigot forks
 
-**ProtocolLib** plugin version 5.0 or higher is required for operation.
+**ProtocolLib** plugin version 5.0.0 or higher is required for operation.
 
 
 ### Key Features:
