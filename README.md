@@ -21,7 +21,7 @@ JavaDoc for AnhyLibAPI are available at the following link: [AnhyLibAPI Documen
 
 ### Integration with Gradle and Maven:
 
-#####Gradle:
+##### Gradle:
 
 ```groovy
 dependencyResolutionManagement {
@@ -38,7 +38,7 @@ dependencies {
 }
 ```
 
-#####Maven:
+##### Maven:
 
 ```xml
 <repositories>
