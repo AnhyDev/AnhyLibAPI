@@ -71,7 +71,9 @@ dependencies {
 
 ### Plugin Writing Examples:
 
-For examples of writing plugins using AnhyLibAPI, visit the following link: [AnhyLibAPI Plugin Examples](https://github.com/AnhyDev/ResourcesHub/tree/main/AnhyLibAPI/examples/ExampleLangPlugin).
+For a comprehensive, ready-to-use plugin example that implements AnhyLibAPI, visit the following link: [AnhyLibAPI Plugin Examples](https://github.com/AnhyDev/ResourcesHub/tree/main/AnhyLibAPI/examples/ExampleLangPlugin). This example is more than just sample code; it is a fully functional plugin featuring multilingual support, configurable settings, and player commands. Developers can use this plugin as a foundation, renaming and repackaging as needed, while also adding their own code to extend its functionality. It serves as an excellent starting point for understanding and applying AnhyLibAPI in a practical, real-world plugin project.
+
+#### See below for some examples from this code:
 
 ```java
 package ink.anh.example;
