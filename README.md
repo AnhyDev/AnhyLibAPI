@@ -4,6 +4,8 @@
 
 **ProtocolLib** plugin version 5.0.0 or higher is required for operation.
 
+**AnhyLibAPI** must be loaded on the server as a plugin. It's crucial to understand that **AnhyLibAPI**, in its role as a plugin, does not monitor any events, have timers, or interact with the world or players, ensuring no additional load on the server's operation and performance. The primary purpose of **AnhyLibAPI** is to provide its API to other plugins, serving as a robust foundation for extending their functionality. This design ensures that **AnhyLibAPI** enhances plugin capabilities without compromising server efficiency.
+
 
 ### Key Features:
 
