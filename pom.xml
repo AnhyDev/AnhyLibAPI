@@ -7,7 +7,7 @@
 
 	<groupId>ink.anh</groupId>
 	<artifactId>AnhyLibAPI</artifactId>
-	<version>1.3.2</version>
+	<version>1.3.3</version>
 	<name>AnhyLibAPI</name>
 	<description>Library for minecraft plugins AnhyLibAPI</description>
       

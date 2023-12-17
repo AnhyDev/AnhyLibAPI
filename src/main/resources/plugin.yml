@@ -1,6 +1,6 @@
 main: ink.anh.api.AnhyLibAPI
 name: AnhyLibAPI
-version: 1.3.2
+version: 1.3.3
 author: AnhyDev
 api-version: 1.13
 description: AnhyLibAPI is a base library for use in various plugins
