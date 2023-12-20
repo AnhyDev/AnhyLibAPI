@@ -40,6 +40,11 @@ public class AnhyLibAPI extends JavaPlugin {
         currentVersion = OtherUtils.getCurrentServerVersion();
     }
 
+    /**
+     * Gets the current server version that was determined when the plugin was enabled.
+     *
+     * @return The current server version as a double.
+     */
 	public double getCurrentVersion() {
 		return currentVersion;
 	}
