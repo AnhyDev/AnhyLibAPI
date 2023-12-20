@@ -37,13 +37,6 @@ public abstract class LibraryManager {
     public abstract String getPluginName();
 
     /**
-     * Manages user interfaces and messaging systems.
-     *
-     * @return An instance of BukkitAudiences for handling messaging and user interfaces.
-     */
-    public abstract BukkitAudiences getBukkitAudiences();
-
-    /**
      * Handles localization and language management.
      *
      * @return An instance of LanguageManager for managing languages.

@@ -13,6 +13,7 @@ import ink.anh.api.utils.PluginReporter;
 public class AnhyLibAPI extends JavaPlugin {
 
     private static AnhyLibAPI instance;
+    
     private double currentVersion;
 
     /**
