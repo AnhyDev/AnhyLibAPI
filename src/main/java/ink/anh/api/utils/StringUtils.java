@@ -1,5 +1,7 @@
 package ink.anh.api.utils;
 
+import org.bukkit.ChatColor;
+
 /**
  * Utility class for string manipulation, particularly for colorizing strings in Minecraft.
  */
@@ -15,7 +17,7 @@ public class StringUtils {
      */
     public static String colorize(String text) {
         // Use the actual section symbol character in code to avoid issues in JavaDoc
-        return text.replace("&", "\u00A7");
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 
     // Additional string processing methods can be added here

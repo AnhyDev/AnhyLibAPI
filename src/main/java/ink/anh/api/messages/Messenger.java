@@ -4,14 +4,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import ink.anh.api.AnhyLibAPI;
+import ink.anh.api.LibraryManager;
+import ink.anh.api.lingo.Translator;
+import ink.anh.api.utils.LangUtils;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import ink.anh.api.LibraryManager;
-import ink.anh.api.lingo.Translator;
-import ink.anh.api.utils.LangUtils;
 
 /**
  * Utility class for sending formatted messages to players or the console.
@@ -41,7 +44,8 @@ public class Messenger {
                                                  .color(color)
                                                  .decoration(TextDecoration.BOLD, false); // No bold for the message text
 
-            libraryManager.getBukkitAudiences().sender(player).sendMessage(pluginNameComponent.append(messageComponent));
+            sendVersionDependentPlayerMessage(libraryManager, player, pluginName + coloredMessage, pluginNameComponent.append(messageComponent));
+
         } else {
             sendConsole(libraryManager.getPlugin(), coloredMessage, type);
         }
@@ -64,7 +68,8 @@ public class Messenger {
             TextColor color = TextColor.fromCSSHexString(type.getColor(true));
             Component messageComponent = Component.text(coloredMessage)
                                                  .color(color);
-            libraryManager.getBukkitAudiences().sender(player).sendMessage(messageComponent);
+            
+            sendVersionDependentPlayerMessage(libraryManager, player, coloredMessage, messageComponent);
         } else {
             sendConsole(libraryManager.getPlugin(), coloredMessage, type);
         }
@@ -99,7 +104,8 @@ public class Messenger {
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            libraryManager.getBukkitAudiences().sender(player).sendMessage(folderComponent);
+
+            sendVersionDependentPlayerMessage(libraryManager, player, icon + folder, folderComponent);
         } else {
             // For console, send a simple message without interactivity
             String coloredFolder = Translator.translateKyeWorld(libraryManager, icon + folder, null);
@@ -129,6 +135,28 @@ public class Messenger {
             default:
                 Logger.info(plugin, formatedMessage);
                 break;
+        }
+    }
+    
+    /**
+     * Sends a formatted message to a player, considering server version compatibility.
+     * 
+     * @param libraryManager The LibraryManager instance for language and plugin information.
+     * @param player The player to whom the message is to be sent.
+     * @param message The formatted a String.
+     * @param messageComponent The formatted message as a Component.
+     */
+    public static void sendVersionDependentPlayerMessage(LibraryManager libraryManager, Player player, String message, Component messageComponent) {
+    	BukkitAudiences bukkitAudiences = BukkitAudiences.create(libraryManager.getPlugin());
+        if (AnhyLibAPI.getInstance().getCurrentVersion() < 1.19 && (player instanceof Audience)) {
+        	if (player instanceof Audience) {
+            	Audience audience = (Audience) player;
+            	audience.sendMessage(messageComponent);
+        	} else {
+        		player.sendMessage(message);
+        	}
+        } else {
+        	bukkitAudiences.sender(player).sendMessage(messageComponent);
         }
     }
     

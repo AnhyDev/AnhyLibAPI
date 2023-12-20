@@ -1,6 +1,8 @@
 package ink.anh.api;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import ink.anh.api.utils.OtherUtils;
 import ink.anh.api.utils.PluginReporter;
 
 /**
@@ -11,6 +13,7 @@ import ink.anh.api.utils.PluginReporter;
 public class AnhyLibAPI extends JavaPlugin {
 
     private static AnhyLibAPI instance;
+    private double currentVersion;
 
     /**
      * Retrieves the active instance of the AnhyLibAPI plugin.
@@ -33,5 +36,11 @@ public class AnhyLibAPI extends JavaPlugin {
 
         // Report the plugin name using the PluginReporter utility class.
         new PluginReporter(this).reportPluginName();
+        
+        currentVersion = OtherUtils.getCurrentServerVersion();
     }
+
+	public double getCurrentVersion() {
+		return currentVersion;
+	}
 }

@@ -1,7 +1,8 @@
 main: ink.anh.api.AnhyLibAPI
 name: AnhyLibAPI
-version: 1.3.3
+version: 1.3.4
 author: AnhyDev
 api-version: 1.13
+depend: [ProtocolLib]
 description: AnhyLibAPI is a base library for use in various plugins
 website: http://dev.anh.ink/anhylibapi
