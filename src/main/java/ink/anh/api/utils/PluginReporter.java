@@ -35,31 +35,34 @@ public class PluginReporter {
         new BukkitRunnable() {
             @Override
             public void run() {
-                try {
-                    String pluginName = plugin.getDescription().getName();
-                    String jsonData = String.format("{\"plugin\":\"%s\"}", pluginName);
-
-                    HttpClient client = HttpClient.newHttpClient();
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create("https://dev.anh.ink/monitoring/receive-plugin-name.php"))
-                            .header("Content-Type", "application/json")
-                            .POST(HttpRequest.BodyPublishers.ofString(jsonData))
-                            .build();
-
-                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                    if ("1".equals(response.body())) {
-                        Logger.info(plugin, "Successfully.");
-                    } else if ("0".equals(response.body())) {
-                        Logger.error(plugin, "Failed to report plugin data.");
-                    } else {
-                        Logger.error(plugin, "Unexpected response from server");
-                    }
-                } catch (Exception e) {
-                    Logger.error(plugin, "An error occurred: " + e.getMessage());
-                    e.printStackTrace();
-                }
+            	if (!sendReport()) {
+            		sendReport();
+            	}
             }
         }.runTaskAsynchronously(plugin);
+    }
+
+    private boolean sendReport() {
+        try {
+            String pluginName = plugin.getDescription().getName();
+            String jsonData = String.format("{\"plugin\":\"%s\"}", pluginName);
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://dev.anh.ink/monitoring/receive-plugin-name.php"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonData))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if ("1".equals(response.body())) {
+                return true;
+            }
+        } catch (Exception e) {
+            Logger.error(plugin, "An error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+		return false;
     }
 }

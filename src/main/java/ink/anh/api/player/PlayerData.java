@@ -1,13 +1,15 @@
 package ink.anh.api.player;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
-
 import ink.anh.api.AnhyLibAPI;
 
 /**
- * Provides functionality to manage custom data for players using the Persistent Data API.
+ * Provides functionality to manage custom data for players using Bukkit's Persistent Data API.
+ * This class handles the storage, retrieval, and removal of custom data, and also triggers 
+ * custom events when player data is changed.
  */
 public class PlayerData {
 
@@ -15,13 +17,16 @@ public class PlayerData {
 
     /**
      * Constructs a PlayerData instance associated with the AnhyLibAPI.
+     * This instance will interact with Bukkit's Persistent Data API to manage custom data for players.
      */
     public PlayerData() {
         this.anhyLibAPI = AnhyLibAPI.getInstance();
     }
 
     /**
-     * Sets custom data for a player as a serialized array of strings.
+     * Sets custom data for a player as a serialized array of strings and triggers a PlayerDataChangedEvent.
+     * The event is called after the data is set, allowing other parts of the plugin or external plugins
+     * to react to the data change.
      *
      * @param player The player whose data is being set.
      * @param dataKey The key for the custom data.
@@ -31,6 +36,10 @@ public class PlayerData {
         NamespacedKey key = new NamespacedKey(anhyLibAPI, dataKey);
         String combined = String.join(",", values);  // Serializing the array into a single string
         player.getPersistentDataContainer().set(key, PersistentDataType.STRING, combined);
+
+        // Triggering the custom event to notify about the data change
+        PlayerDataChangedEvent dataChangedEvent = new PlayerDataChangedEvent(player, dataKey, values);
+        Bukkit.getServer().getPluginManager().callEvent(dataChangedEvent);
     }
 
     /**

@@ -3,8 +3,6 @@ package ink.anh.api;
 import org.bukkit.plugin.Plugin;
 import ink.anh.api.lingo.lang.LanguageManager;
 import ink.anh.api.utils.PluginReporter;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-
 /**
  * Abstract class that defines the management framework for various aspects of a plugin.
  * This includes localization, messaging systems, language management, and configuration settings.
