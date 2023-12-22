@@ -85,6 +85,20 @@ public class MessageComponents {
         private String clickValue;
 
         /**
+         * Appends another MessageComponents to the current builder.
+         *
+         * @param other The MessageComponents to append.
+         * @return The builder instance for chaining.
+         */
+        public MessageBuilder append(MessageComponents other) {
+            if (other != null && other.getComponent() != null) {
+                applyCurrentComponent();
+                currentComponentBuilder.append(other.getComponent());
+            }
+            return this;
+        }
+
+        /**
          * Sets the content of the current text component.
          *
          * @param content The text content to set.
