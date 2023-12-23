@@ -93,7 +93,7 @@ public class MessageComponents {
         public MessageBuilder append(MessageComponents other) {
             if (other != null && other.getComponent() != null) {
                 applyCurrentComponent();
-                currentComponentBuilder.append(other.getComponent());
+                components.add(other.getComponent());
             }
             return this;
         }
@@ -134,16 +134,34 @@ public class MessageComponents {
             return this;
         }
 
+        /**
+         * Adds a hover event that shows an item when hovered over in chat.
+         *
+         * @param showItemData The data for the show item hover event.
+         * @return The builder instance for chaining.
+         */
         public MessageBuilder showItem(HoverEvent.ShowItem showItemData) {
             this.showItemEvent = HoverEvent.showItem(showItemData);
             return this;
         }
 
+        /**
+         * Adds a hover event that shows an entity when hovered over in chat.
+         *
+         * @param showEntityData The data for the show entity hover event.
+         * @return The builder instance for chaining.
+         */
         public MessageBuilder showEntity(HoverEvent.ShowEntity showEntityData) {
             this.showEntityEvent = HoverEvent.showEntity(showEntityData);
             return this;
         }
 
+        /**
+         * Sets the text to be inserted into chat when the component is shift-clicked.
+         *
+         * @param text The text to be inserted into chat.
+         * @return The builder instance for chaining.
+         */
         public MessageBuilder insertTextChat(String text) {
             this.clickAction = "insertionText";
             this.clickValue = text;
