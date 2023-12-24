@@ -11,8 +11,8 @@ import ink.anh.api.utils.PluginReporter;
 
 /**
  * The main class of the AnhyLibAPI Bukkit/Spigot plugin.
- * This class is responsible for initializing and managing key components of the library,
- * such as global data maps and version handling.
+ * This class is responsible for initializing and managing key components of the library
+ * and global data maps.
  */
 public class AnhyLibAPI extends JavaPlugin {
 
