@@ -15,11 +15,9 @@ public abstract class DataHandler {
 
     /**
      * Constructs a DataHandler with a reference to the AnhyLibAPI plugin.
-     *
-     * @param plugin The instance of AnhyLibAPI.
      */
-    public DataHandler(AnhyLibAPI plugin) {
-        this.plugin = plugin;
+    public DataHandler() {
+        this.plugin = AnhyLibAPI.getInstance();
     }
 
     /**
