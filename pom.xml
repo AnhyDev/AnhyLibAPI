@@ -7,7 +7,7 @@
 
 	<groupId>ink.anh</groupId>
 	<artifactId>AnhyLibAPI</artifactId>
-	<version>1.3.5-t2</version>
+	<version>1.3.5-t3</version>
 	<name>AnhyLibAPI</name>
 	<description>Library for minecraft plugins AnhyLibAPI</description>
       
@@ -39,7 +39,7 @@
                                 </transformer>
                             </transformers>
                             <relocations>
-                            <!--relocation>
+                            <!--relocation> 
                                 <pattern>net.kyori</pattern>
                                 <shadedPattern>ink.anh.shaded.net.kyori</shadedPattern>
                             </relocation-->
