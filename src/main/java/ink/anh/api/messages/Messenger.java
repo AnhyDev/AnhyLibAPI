@@ -17,14 +17,15 @@ import net.kyori.adventure.text.Component;
  */
 public class Messenger {
     
-    /**
-     * Sends a formatted message to a player using advanced text components.
-     * This method utilizes the Adventure library for advanced text formatting and interactivity.
-     *
-     * @param plugin The plugin instance, used for creating an audience with the BukkitAudiences library.
-     * @param player The player to whom the message is to be sent.
-     * @param messageComponent The MessageComponents instance containing the formatted text component.
-     */
+	/**
+	 * Sends a formatted message to a CommandSender (player or console) using advanced text components.
+	 * This method utilizes the Adventure library for advanced text formatting and interactivity.
+	 *
+	 * @param plugin The plugin instance, used for creating an audience with the BukkitAudiences library.
+	 * @param sender The CommandSender (player or console) to whom the message is to be sent.
+	 * @param messageComponent The MessageComponents instance containing the formatted text component.
+	 * @param message The string message to be sent.
+	 */
     public static void sendMessage(Plugin plugin, CommandSender sender, MessageComponents messageComponent, String message) {
         sendComponent(plugin, sender, messageComponent.getComponent(), message);
     }

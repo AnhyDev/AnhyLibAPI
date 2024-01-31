@@ -7,6 +7,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,14 +100,15 @@ public class MessageComponents {
         }
 
         /**
-         * Sets the content of the current text component.
+         * Sets the content of the current text component, processing legacy color codes.
          *
          * @param content The text content to set.
          * @return The builder instance for chaining.
          */
         public MessageBuilder content(String content) {
             applyCurrentComponent();
-            currentComponentBuilder = Component.text().content(content);
+            Component legacyComponent = LegacyComponentSerializer.legacySection().deserialize(content);
+            currentComponentBuilder = Component.text().append(legacyComponent);
             return this;
         }
 
@@ -117,7 +119,7 @@ public class MessageComponents {
          * @return The builder instance for chaining.
          */
         public MessageBuilder hoverMessage(String hoverMessage) {
-            this.hoverMessage = hoverMessage;
+            this.hoverMessage = LegacyComponentSerializer.legacySection().deserialize(hoverMessage).content();
             return this;
         }
 
