@@ -7,10 +7,10 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import ink.anh.api.utils.StringUtils;
 
 /**
  * The MessageComponents class is utilized for creating and managing complex text components 
@@ -100,26 +100,28 @@ public class MessageComponents {
         }
 
         /**
-         * Sets the content of the current text component, processing legacy color codes.
+         * Sets the content of the current text component.
+         * Transforms Minecraft color codes from '&amp;' prefix to the section symbol prefix.
          *
          * @param content The text content to set.
          * @return The builder instance for chaining.
          */
         public MessageBuilder content(String content) {
             applyCurrentComponent();
-            Component legacyComponent = LegacyComponentSerializer.legacySection().deserialize(content);
-            currentComponentBuilder = Component.text().append(legacyComponent);
+            content = StringUtils.colorize(content);
+            currentComponentBuilder = Component.text().content(content);
             return this;
         }
 
         /**
          * Sets a hover message for the current text component.
+         * Transforms Minecraft color codes from '&amp;' prefix to the section symbol prefix.S
          *
          * @param hoverMessage The hover message text.
          * @return The builder instance for chaining.
          */
         public MessageBuilder hoverMessage(String hoverMessage) {
-            this.hoverMessage = LegacyComponentSerializer.legacySection().deserialize(hoverMessage).content();
+            this.hoverMessage = StringUtils.colorize(hoverMessage);
             return this;
         }
 
