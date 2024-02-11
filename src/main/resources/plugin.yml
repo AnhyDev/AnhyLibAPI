@@ -1,6 +1,6 @@
 main: ink.anh.api.AnhyLibAPI
 name: AnhyLibAPI
-version: 1.4.0
+version: 1.4.1
 author: AnhyDev
 api-version: 1.13
 depend: [ProtocolLib]

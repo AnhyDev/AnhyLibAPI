@@ -7,7 +7,7 @@
 
 	<groupId>ink.anh</groupId>
 	<artifactId>AnhyLibAPI</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<name>AnhyLibAPI</name>
 	<description>Library for minecraft plugins AnhyLibAPI</description>
       
@@ -103,7 +103,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>5.0.0</version>
+            <version>5.1.0</version>
             <scope>provided</scope>
         </dependency>
         
