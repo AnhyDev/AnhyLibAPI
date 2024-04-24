@@ -23,17 +23,9 @@ public class MessageChat {
      * @param textForFormatting  The message information including template and replacements.
      */
 	public static void sendMessage(LibraryManager libraryManager, CommandSender sender, MessageForFormatting textForFormatting) {
-	    String[] langs = sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : new String[] {libraryManager.getDefaultLang()};
-	    String message = textForFormatting.getTemplate();
-	    
-	    String translateText = Translator.translateKyeWorld(libraryManager, message, langs); 
-	    translateText = StringUtils.formatString(translateText, textForFormatting.getReplacements());
-	    
-	    MessageBuilder mBuilder = MessageComponents.builder();
-
-	    mBuilder.append(MessageComponents.builder()
-	        .content(translateText)
-	        .build());
+    	MessageContext context = new MessageContext(libraryManager, sender, textForFormatting, false);
+        String translateText = context.translateText;
+        MessageBuilder mBuilder = context.mBuilder;
 
 	    Messenger.sendMessage(libraryManager.getPlugin(), sender, mBuilder.build(), translateText);
 	}
@@ -50,23 +42,14 @@ public class MessageChat {
      * @param addPluginName      A boolean to decide if the plugin name should be prefixed to the message.
      */
 	public static void sendMessage(LibraryManager libraryManager, CommandSender sender, MessageForFormatting textForFormatting, MessageForFormatting hoverText, MessageType type, boolean addPluginName) {
-		
-	    String[] langs = sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : new String[] {libraryManager.getDefaultLang()};
-	    
-	    String translateText = Translator.translateKyeWorld(libraryManager, textForFormatting.getTemplate(), langs); 
-	    translateText = StringUtils.formatString(translateText, textForFormatting.getReplacements());
+    	MessageContext context = new MessageContext(libraryManager, sender, textForFormatting, addPluginName);	
+        String[] langs = context.langs;
+        String translateText = context.translateText;
+        MessageBuilder mBuilder = context.mBuilder;
+        
         String translateHoverText = Translator.translateKyeWorld(libraryManager, hoverText.getTemplate(), langs);
         translateHoverText = StringUtils.formatString(translateHoverText, hoverText.getReplacements());
 	    String consoleText = type.getColor(false) + translateText;
-
-	    MessageBuilder mBuilder = MessageComponents.builder();
-	    if (addPluginName) {
-	        mBuilder.append(MessageComponents.builder()
-	            .content("[" + libraryManager.getPluginName() + "] ")
-	            .hexColor("#1D87E4")
-	            .decoration("BOLD", true)
-	            .build());
-	    }
 
 	    mBuilder.append(MessageComponents.builder()
 	        .content(translateText)
@@ -89,22 +72,11 @@ public class MessageChat {
      * @param addPluginName      A boolean to decide if the plugin name should be prefixed to the message.
      */
 	public static void sendMessage(LibraryManager libraryManager, CommandSender sender, MessageForFormatting textForFormatting, MessageType type, boolean addPluginName) {
-		
-	    String[] langs = sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : new String[] {libraryManager.getDefaultLang()};
-	    String message = textForFormatting.getTemplate();
-	    
-	    String translateText = Translator.translateKyeWorld(libraryManager, message, langs); 
-	    translateText = StringUtils.formatString(translateText, textForFormatting.getReplacements());
+    	MessageContext context = new MessageContext(libraryManager, sender, textForFormatting, addPluginName);	
+        String translateText = context.translateText;
+        MessageBuilder mBuilder = context.mBuilder;
+        
 	    String consoleText = type.getColor(false) + translateText;
-	    
-	    MessageBuilder mBuilder = MessageComponents.builder();
-	    if (addPluginName) {
-	        mBuilder.append(MessageComponents.builder()
-	            .content("[" + libraryManager.getPluginName() + "] ")
-	            .hexColor("#1D87E4")
-	            .decoration("BOLD", true)
-	            .build());
-	    }
 
 	    mBuilder.append(MessageComponents.builder()
 	        .content(translateText)
@@ -126,24 +98,15 @@ public class MessageChat {
      * @param addPluginName      A boolean to decide if the plugin name should be prefixed to the message.
      */
     public static void sendMessage(LibraryManager libraryManager, CommandSender sender, MessageForFormatting textForFormatting, MessageForFormatting hoverText, String command, MessageType type, boolean addPluginName) {
-        String[] langs = sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : new String[] {libraryManager.getDefaultLang()};
-        String message = textForFormatting.getTemplate();
+    	MessageContext context = new MessageContext(libraryManager, sender, textForFormatting, addPluginName);	
+        String[] langs = context.langs;
+        String translateText = context.translateText;
+        MessageBuilder mBuilder = context.mBuilder;
+        
         String hoverMessage = hoverText.getTemplate();
-
-        String translateText = Translator.translateKyeWorld(libraryManager, message, langs); 
-        translateText = StringUtils.formatString(translateText, textForFormatting.getReplacements());
         String translateHoverText = Translator.translateKyeWorld(libraryManager, hoverMessage, langs);
         translateHoverText = StringUtils.formatString(translateHoverText, hoverText.getReplacements());
         String consoleText = type.getColor(false) + translateText;
-
-        MessageBuilder mBuilder = MessageComponents.builder();
-        if (addPluginName) {
-            mBuilder.append(MessageComponents.builder()
-                .content("[" + libraryManager.getPluginName() + "] ")
-                .hexColor("#1D87E4")
-                .decoration("BOLD", true)
-                .build());
-        }
 
         mBuilder.append(MessageComponents.builder()
             .content(translateText)
@@ -167,23 +130,15 @@ public class MessageChat {
      * @param addPluginName      A boolean to decide if the plugin name should be prefixed to the message.
      */
     public static void sendMessageWithLink(LibraryManager libraryManager, CommandSender sender, MessageForFormatting textForFormatting, MessageForFormatting hoverText, String url, MessageType type, boolean addPluginName) {
-		
-	    String[] langs = sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : new String[] {libraryManager.getDefaultLang()};
-	    
-	    String translateText = Translator.translateKyeWorld(libraryManager, textForFormatting.getTemplate(), langs); 
-	    translateText = StringUtils.formatString(translateText, textForFormatting.getReplacements());
+    	MessageContext context = new MessageContext(libraryManager, sender, textForFormatting, addPluginName);	
+        String[] langs = context.langs;
+        String translateText = context.translateText;
+        MessageBuilder mBuilder = context.mBuilder;
+        
         String translateHoverText = Translator.translateKyeWorld(libraryManager, hoverText.getTemplate(), langs);
         translateHoverText = StringUtils.formatString(translateHoverText, hoverText.getReplacements());
 	    String consoleText = type.getColor(false) + translateText;
 
-        MessageBuilder mBuilder = MessageComponents.builder();
-        if (addPluginName) {
-            mBuilder.append(MessageComponents.builder()
-                .content("[" + libraryManager.getPluginName() + "] ")
-                .hexColor("#1D87E4")
-                .decoration("BOLD", true)
-                .build());
-        }
 
         mBuilder.append(MessageComponents.builder()
             .content(translateText)
@@ -193,5 +148,77 @@ public class MessageChat {
             .build());
 
         Messenger.sendMessage(libraryManager.getPlugin(), sender, mBuilder.build(), consoleText);
+    }
+    /**
+     * Sends a translated and formatted message with hover text and a clickable action to copy text to the clipboard.
+     * 
+     * @param libraryManager      The LibraryManager instance.
+     * @param sender              The CommandSender to whom the message will be sent.
+     * @param textForFormatting   The primary message information.
+     * @param hoverText           The hover text information.
+     * @param textToCopy          The text that will be copied to the clipboard when the message is clicked.
+     * @param type                The MessageType, defining the message color and style.
+     * @param addPluginName       A boolean to decide if the plugin name should be prefixed to the message.
+     */
+    public static void sendMessageWithCopy(LibraryManager libraryManager, CommandSender sender, MessageForFormatting textForFormatting, MessageForFormatting hoverText, String textToCopy, MessageType type, boolean addPluginName) {
+    	MessageContext context = new MessageContext(libraryManager, sender, textForFormatting, addPluginName);	
+        String[] langs = context.langs;
+        String translateText = context.translateText;
+        MessageBuilder mBuilder = context.mBuilder;
+        
+        String translateHoverText = Translator.translateKyeWorld(libraryManager, hoverText.getTemplate(), langs);
+        translateHoverText = StringUtils.formatString(translateHoverText, hoverText.getReplacements());
+        String consoleText = type.getColor(false) + translateText;
+
+
+        mBuilder.append(MessageComponents.builder()
+            .content(translateText)
+            .hexColor(type.getColor(true))
+            .hoverMessage(translateHoverText)
+            .clickActionCopy(textToCopy)
+            .build());
+
+        Messenger.sendMessage(libraryManager.getPlugin(), sender, mBuilder.build(), consoleText);
+    }
+
+    /**
+     * Encapsulates context information for formatting and localizing messages sent to command senders.
+     * This includes determining the appropriate language settings for the sender and managing message formatting tasks.
+     */
+    private static class MessageContext {
+        String[] langs;
+        String translateText;
+        MessageBuilder mBuilder;
+
+        /**
+         * Constructs a new MessageContext for a specific sender and message formatting information.
+         * It automatically resolves the language preferences of the sender, translates and formats the message,
+         * and prepares it for sending.
+         *
+         * @param libraryManager The LibraryManager instance, providing access to plugin-specific settings and utilities.
+         * @param sender The CommandSender to whom the message will be sent.
+         * @param textForFormatting The structured message data containing template and replacements.
+         * @param addPluginName Indicates whether to prefix the message with the plugin's name.
+         */
+        public MessageContext(LibraryManager libraryManager, CommandSender sender, MessageForFormatting textForFormatting, boolean addPluginName) {
+            // Determine language settings for the sender
+            this.langs = sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : new String[]{libraryManager.getDefaultLang()};
+            
+            // Translate and format the message according to the specified language and formatting rules
+            this.translateText = Translator.translateKyeWorld(libraryManager, textForFormatting.getTemplate(), langs);
+            this.translateText = StringUtils.formatString(translateText, textForFormatting.getReplacements());
+            
+            // Initialize the MessageBuilder for constructing the final message
+            this.mBuilder = MessageComponents.builder();
+            
+            // Optionally add the plugin's name to the message
+            if (addPluginName) {
+                mBuilder.append(MessageComponents.builder()
+                    .content("[" + libraryManager.getPluginName() + "] ")
+                    .hexColor("#1D87E4")
+                    .decoration("BOLD", true)
+                    .build());
+            }
+        }
     }
 }

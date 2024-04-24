@@ -1,5 +1,6 @@
 package ink.anh.api.messages;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -43,7 +44,7 @@ public class Messenger {
     @Deprecated
     public static void sendMessage(LibraryManager libraryManager, CommandSender sender, String message, MessageType type) {
         String pluginName = "[" + libraryManager.getPluginName() + "] ";
-        String translatedMessage = Translator.translateKyeWorld(libraryManager, message, getPlayerLanguage(sender));
+        String translatedMessage = Translator.translateKyeWorld(libraryManager, message, getLangs(sender));
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -74,7 +75,7 @@ public class Messenger {
      */
     @Deprecated
     public static void sendMessage(LibraryManager libraryManager, Player player, String message, String hexColor) {
-        String translatedMessage = Translator.translateKyeWorld(libraryManager, message, getPlayerLanguage(player));
+        String translatedMessage = Translator.translateKyeWorld(libraryManager, message, getLangs(player));
         MessageComponents messageComponents = MessageComponents.builder()
         													   .content(translatedMessage)
         													   .hexColor(hexColor).build();
@@ -94,7 +95,7 @@ public class Messenger {
      */
     @Deprecated
     public static void sendMessageSimple(LibraryManager libraryManager, CommandSender sender, String message, String icon, MessageType type) {
-        String translatedMessage = Translator.translateKyeWorld(libraryManager, icon + message, getPlayerLanguage(sender));
+        String translatedMessage = Translator.translateKyeWorld(libraryManager, icon + message, getLangs(sender));
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -191,14 +192,20 @@ public class Messenger {
                 	Audience audience = (Audience) player;
                 	audience.sendMessage(messageComponent);
             	} else {
-            		player.sendMessage(message);
+            		Bukkit.getScheduler().runTask(plugin, () -> {
+            			player.sendMessage(message);
+            		});
             	}
             } else {
             	BukkitAudiences bukkitAudiences = BukkitAudiences.create(plugin);
-            	bukkitAudiences.sender(player).sendMessage(messageComponent);
+            	Bukkit.getScheduler().runTask(plugin, () -> {
+            		bukkitAudiences.sender(player).sendMessage(messageComponent);
+            	});
             }
     	} else {
-    		sender.sendMessage(message);
+    		Bukkit.getScheduler().runTask(plugin, () -> {
+    			sender.sendMessage(message);
+    		});
     	}
     }
     
@@ -208,7 +215,7 @@ public class Messenger {
      * @param sender The CommandSender, assumed to be a player.
      * @return An array of language codes, or null if the sender is not a player.
      */
-    private static String[] getPlayerLanguage(CommandSender sender) {
+    private static String[] getLangs(CommandSender sender) {
         return sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : null;
     }
 }
