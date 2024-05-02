@@ -1,5 +1,8 @@
 package ink.anh.api.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bukkit.ChatColor;
 
 /**
@@ -7,18 +10,42 @@ import org.bukkit.ChatColor;
  */
 public class StringUtils {
 
-    /**
-     * Transforms Minecraft color codes from '&amp;' prefix to the section symbol prefix.
-     * This is used for color and formatting codes within the game.
-     * For example, the string "&amp;cHello" would be transformed to a string that begins with the section symbol followed by 'cHello'.
-     *
-     * @param text The text containing color codes prefixed with '&amp;'.
-     * @return The text with color codes now prefixed with the section symbol.
-     */
-    public static String colorize(String text) {
-        // Use ChatColor to translate color codes from '&' to the section symbol
-        return ChatColor.translateAlternateColorCodes('&', text);
-    }
+	/**
+	 * Transforms Minecraft color codes from '&' prefix to the section symbol prefix, and also handles HEX color codes.
+	 * This method is used for color and formatting codes within the game. It translates standard color codes and
+	 * formats HEX color codes correctly for Minecraft usage.
+	 * For example, the string "&cHello" would be transformed to a string that begins with the section symbol followed by 'cHello',
+	 * and a HEX color code like "&#FFFFFF" would be formatted to be recognized as a white color in Minecraft.
+	 *
+	 * @param text The text containing color codes prefixed with '&' and HEX color codes prefixed with '&#'.
+	 * @return The text with standard color codes now prefixed with the section symbol and HEX color codes formatted properly.
+	 */
+	public static String colorize(String text) {
+	    // First translate the standard Minecraft color codes
+	    text = ChatColor.translateAlternateColorCodes('&', text);
+
+	    // Now handle the HEX color codes properly
+	    Pattern pattern = Pattern.compile("&#([0-9a-fA-F]{6})"); // This pattern ensures exactly 6 hex digits
+	    Matcher matcher = pattern.matcher(text);
+
+	    StringBuffer buffer = new StringBuffer();
+	    while (matcher.find()) {
+	        String colorCode = matcher.group(1); // Extract the HEX code without '&#'
+	        if (colorCode.length() == 6) { // Check if the HEX code is exactly 6 characters
+	            StringBuilder replacement = new StringBuilder("§x"); // Start with §x which is needed for HEX colors in Minecraft
+	            // Append each character of the HEX code preceded by '§'
+	            for (char c : colorCode.toCharArray()) {
+	                replacement.append('§').append(c);
+	            }
+	            // Replace the match in the original text with the formatted string
+	            matcher.appendReplacement(buffer, replacement.toString());
+	        }
+	    }
+	    matcher.appendTail(buffer);
+
+	    return buffer.toString();
+	}
+
 
     /**
      * Formats a string by replacing placeholders with specified replacement values and colorizes the resulting string.
