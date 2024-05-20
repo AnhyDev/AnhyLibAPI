@@ -1,4 +1,4 @@
-package ink.anh.api.utils;
+package ink.anh.api.enums;
 
 /**
  * Enum representing various statuses that can be returned by operations within the application.
