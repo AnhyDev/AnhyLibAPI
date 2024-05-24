@@ -1,6 +1,9 @@
 package ink.anh.api;
 
 import org.bukkit.plugin.Plugin;
+
+import ink.anh.api.database.DatabaseManager;
+import ink.anh.api.database.MySQLConfig;
 import ink.anh.api.lingo.lang.LanguageManager;
 import ink.anh.api.utils.PluginReporter;
 /**
@@ -54,4 +57,18 @@ public abstract class LibraryManager {
      * @return True if the debug mode is enabled, false otherwise.
      */
     public abstract boolean isDebug();
+
+    /**
+     * Gets the database configuration for the plugin.
+     *
+     * @return The database configuration.
+     */
+    public abstract MySQLConfig getMySQLConfig();
+
+    /**
+     * Gets the database manager for the plugin.
+     *
+     * @return The database manager.
+     */
+    public abstract DatabaseManager getDatabaseManager();
 }
