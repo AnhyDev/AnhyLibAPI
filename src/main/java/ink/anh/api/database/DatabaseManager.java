@@ -35,7 +35,7 @@ public abstract class DatabaseManager {
      *
      * @return the library manager.
      */
-    protected LibraryManager getManager() {
+    public LibraryManager getManager() {
         return manager;
     }
 
