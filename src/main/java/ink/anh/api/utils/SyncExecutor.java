@@ -6,7 +6,7 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 
 /**
- * Utility class for executing tasks synchronously on the main server thread.
+ * Utility class for executing tasks synchronously or asynchronously on the server.
  */
 public class SyncExecutor {
     private static Plugin plugin;
@@ -46,14 +46,34 @@ public class SyncExecutor {
     }
 
     /**
-     * Runs a given {@link SyncRunnable} with a specified object synchronously on the main server thread.
+     * Runs a given {@link RunnableWithArg} with a specified object synchronously on the main server thread.
      * 
-     * @param <T>      the type of the object passed to the SyncRunnable
+     * @param <T>      the type of the object passed to the RunnableWithArg
      * @param object   the object to be passed to the runnable
      * @param runnable the task to be run synchronously with the provided object
      */
-    public static <T> void runSync(T object, SyncRunnable<T> runnable) {
+    public static <T> void runSync(T object, RunnableWithArg<T> runnable) {
         Bukkit.getScheduler().runTask(plugin, () -> runnable.run(object));
+    }
+
+    /**
+     * Runs a given {@link Runnable} asynchronously.
+     * 
+     * @param runnable the task to be run asynchronously
+     */
+    public static void runAsync(Runnable runnable) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+    }
+
+    /**
+     * Runs a given {@link RunnableWithArg} with a specified object asynchronously.
+     * 
+     * @param <T>      the type of the object passed to the RunnableWithArg
+     * @param object   the object to be passed to the runnable
+     * @param runnable the task to be run asynchronously with the provided object
+     */
+    public static <T> void runAsync(T object, RunnableWithArg<T> runnable) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> runnable.run(object));
     }
 
     /**
@@ -62,7 +82,7 @@ public class SyncExecutor {
      * @param <T> the type of the argument passed to the runnable
      */
     @FunctionalInterface
-    public interface SyncRunnable<T> {
+    public interface RunnableWithArg<T> {
         /**
          * Executes with the given object.
          * 
