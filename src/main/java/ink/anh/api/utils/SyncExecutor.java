@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
  * Utility class for executing tasks synchronously or asynchronously on the server.
  */
 public class SyncExecutor {
-	
     private static Plugin plugin;
 
     /**
