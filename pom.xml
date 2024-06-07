@@ -1,15 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
 
-	<groupId>ink.anh</groupId>
-	<artifactId>AnhyLibAPI</artifactId>
-	<version>1.6.0</version>
-	<name>AnhyLibAPI</name>
-	<description>Library for minecraft plugins AnhyLibAPI</description>
+    <groupId>ink.anh</groupId>
+    <artifactId>AnhyLibAPI</artifactId>
+    <version>1.6.0</version>
+    <name>AnhyLibAPI</name>
+    <description>Library for minecraft plugins AnhyLibAPI</description>
       
     <build>
         <plugins>
@@ -18,8 +20,7 @@
                 <version>3.8.1</version>
                 <configuration>
                     <source>21</source>
-        			<target>21</target>
-        			<release>21</release>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -39,10 +40,7 @@
                                 </transformer>
                             </transformers>
                             <relocations>
-                            <!--relocation> 
-                                <pattern>net.kyori</pattern>
-                                <shadedPattern>ink.anh.shaded.net.kyori</shadedPattern>
-                            </relocation-->
+                                <!-- Add any required relocations here -->
                             </relocations>
                             <filters>
                                 <filter>
@@ -80,7 +78,7 @@
         </plugins>
     </build>
 
-   <repositories>
+    <repositories>
         <!-- Spigot Maven repository -->
         <repository>
             <id>spigot-repo</id>
@@ -132,18 +130,18 @@
             <version>4.15.0</version>
         </dependency>
         
-		<!-- https://mvnrepository.com/artifact/net.kyori/adventure-platform-bukkit -->
-		<dependency>
-    		<groupId>net.kyori</groupId>
-    		<artifactId>adventure-platform-bukkit</artifactId>
-    		<version>4.3.2</version>
-		</dependency>
-    	
-    	<dependency>
-			<groupId>me.clip</groupId>
-			<artifactId>placeholderapi</artifactId>
-			<version>2.11.5</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- https://mvnrepository.com/artifact/net.kyori/adventure-platform-bukkit -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>4.3.2</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.5</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
