@@ -40,7 +40,7 @@
                                 </transformer>
                             </transformers>
                             <relocations>
-                                <!-- Add any required relocations here -->
+                                <!-- Add any required relocations here  -->
                             </relocations>
                             <filters>
                                 <filter>
