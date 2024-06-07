@@ -12,6 +12,7 @@ import ink.anh.api.utils.LangUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 
 /**
  * Utility class for sending formatted messages to players or the console.
@@ -218,4 +219,45 @@ public class Messenger {
     private static String[] getLangs(CommandSender sender) {
         return sender instanceof Player ? LangUtils.getPlayerLanguage((Player) sender) : null;
     }
+    /**
+     * Sends a message to a player's action bar.
+     *
+     * @param plugin The plugin instance.
+     * @param sender The CommandSender (player) to whom the message will be sent.
+     * @param messageComponent The MessageComponents instance containing the formatted text component.
+     * @param message The string message to be sent.
+     */
+    public static void sendActionBar(Plugin plugin, CommandSender sender, MessageComponents messageComponent, String message) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Component actionBarComponent = messageComponent.getComponent();
+            BukkitAudiences bukkitAudiences = BukkitAudiences.create(plugin);
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                bukkitAudiences.player(player).sendActionBar(actionBarComponent);
+            });
+        } else {
+            sender.sendMessage("Action bar messages can only be sent to players.");
+        }
+    }
+    /**
+     * Sends a title to a player.
+     *
+     * @param plugin The plugin instance.
+     * @param sender The CommandSender (player) to whom the title will be sent.
+     * @param titleComponent The MessageComponents instance containing the title text component.
+     * @param subtitleComponent The MessageComponents instance containing the subtitle text component.
+     */
+    public static void sendTitle(Plugin plugin, CommandSender sender, MessageComponents titleComponent, MessageComponents subtitleComponent) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Title title = Title.title(titleComponent.getComponent(), subtitleComponent.getComponent());
+            BukkitAudiences bukkitAudiences = BukkitAudiences.create(plugin);
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                bukkitAudiences.player(player).showTitle(title);
+            });
+        } else {
+            sender.sendMessage("Titles can only be sent to players.");
+        }
+    }
+
 }
