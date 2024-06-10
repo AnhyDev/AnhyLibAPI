@@ -21,7 +21,7 @@ public class SQLiteDatabaseManager extends DatabaseManager {
      * @param manager the library manager responsible for managing the plugin.
      * @param tableRegistrar the table registrar for registering database tables.
      */
-    protected SQLiteDatabaseManager(LibraryManager manager, AbstractTableRegistrar tableRegistrar) {
+	public SQLiteDatabaseManager(LibraryManager manager, AbstractTableRegistrar tableRegistrar) {
         super(manager, tableRegistrar);
         initialize();
     }
