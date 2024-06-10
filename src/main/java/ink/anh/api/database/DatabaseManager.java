@@ -12,7 +12,6 @@ import ink.anh.api.LibraryManager;
  * Provides common functionality for different types of database managers.
  */
 public abstract class DatabaseManager {
-    private static DatabaseManager instance;
     private LibraryManager manager;
     private AbstractTableRegistrar tableRegistrar;
 
@@ -37,25 +36,6 @@ public abstract class DatabaseManager {
      */
     public LibraryManager getManager() {
         return manager;
-    }
-
-    /**
-     * Gets the singleton instance of the {@code DatabaseManager}.
-     * Initializes the instance if it is not already initialized.
-     *
-     * @param manager the library manager responsible for managing the plugin.
-     * @param tableRegistrar the table registrar for registering database tables.
-     * @return the singleton instance of the {@code DatabaseManager}.
-     */
-    public static DatabaseManager getInstance(LibraryManager manager, AbstractTableRegistrar tableRegistrar) {
-        if (instance == null) {
-            if (manager.getMySQLConfig().isUseMySQL()) {
-                instance = new MySQLDatabaseManager(manager, tableRegistrar);
-            } else {
-                instance = new SQLiteDatabaseManager(manager, tableRegistrar);
-            }
-        }
-        return instance;
     }
 
     /**
@@ -106,12 +86,11 @@ public abstract class DatabaseManager {
      * @param manager the new library manager.
      * @param tableRegistrar the new table registrar.
      */
-    public static void reload(LibraryManager manager, AbstractTableRegistrar tableRegistrar) {
-        if (instance != null) {
-            instance.closeConnection();
-        }
-        instance = null;
-        getInstance(manager, tableRegistrar);
+    public void reload(LibraryManager manager, AbstractTableRegistrar tableRegistrar) {
+        closeConnection();
+        this.manager = manager;
+        this.tableRegistrar = tableRegistrar;
+        initialize();
     }
 
     /**
@@ -131,7 +110,7 @@ public abstract class DatabaseManager {
      * Initializes all tables registered with the table registrar.
      */
     public void initializeTables() {
-        tableRegistrar.registerAllTables(instance);
+        tableRegistrar.registerAllTables(this);
         tables.values().forEach(AbstractTable::initialize);
     }
 }
