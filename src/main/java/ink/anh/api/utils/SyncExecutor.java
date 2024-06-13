@@ -10,14 +10,19 @@ import org.bukkit.plugin.Plugin;
  */
 public class SyncExecutor {
     private static Plugin plugin;
+    private static boolean initialized = false;
 
     /**
      * Initializes the SyncExecutor with the provided plugin instance.
      * 
      * @param pluginInstance the instance of the plugin to be used for scheduling tasks
+     * @throws IllegalStateException if the SyncExecutor is already initialized
      */
     public static void init(Plugin pluginInstance) {
-        plugin = pluginInstance;
+        if (!initialized) {
+            plugin = pluginInstance;
+            initialized = true;
+        }
     }
 
     /**

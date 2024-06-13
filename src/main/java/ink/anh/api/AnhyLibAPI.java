@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import ink.anh.api.utils.OtherUtils;
 import ink.anh.api.utils.PluginReporter;
+import ink.anh.api.utils.SyncExecutor;
 
 /**
  * The main class of the AnhyLibAPI Bukkit/Spigot plugin.
@@ -46,6 +47,8 @@ public class AnhyLibAPI extends JavaPlugin {
         
         currentVersion = OtherUtils.getCurrentServerVersion();
         setGlobalDataMap();
+        
+        SyncExecutor.init(instance);
     }
 
     /**
