@@ -7,6 +7,8 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +111,7 @@ public class MessageComponents {
         public MessageBuilder content(String content) {
             applyCurrentComponent();
             content = StringUtils.colorize(content);
-            currentComponentBuilder = Component.text().content(content);
+            currentComponentBuilder = LegacyComponentSerializer.legacySection().deserialize(content).toBuilder();
             return this;
         }
 
