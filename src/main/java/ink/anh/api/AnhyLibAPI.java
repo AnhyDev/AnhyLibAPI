@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import ink.anh.api.nbt.NBTExplorer;
 import ink.anh.api.utils.OtherUtils;
 import ink.anh.api.utils.PluginReporter;
 import ink.anh.api.utils.SyncExecutor;
@@ -47,7 +48,8 @@ public class AnhyLibAPI extends JavaPlugin {
         
         currentVersion = OtherUtils.getCurrentServerVersion();
         setGlobalDataMap();
-        
+
+        NBTExplorer.initialize(this);
         SyncExecutor.init(instance);
     }
 
