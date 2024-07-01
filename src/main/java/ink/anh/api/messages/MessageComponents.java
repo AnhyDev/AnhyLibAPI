@@ -110,7 +110,6 @@ public class MessageComponents {
          */
         public MessageBuilder content(String content) {
             applyCurrentComponent();
-            content = StringUtils.colorize(content);
             currentComponentBuilder = LegacyComponentSerializer.legacySection().deserialize(content).toBuilder();
             return this;
         }
@@ -243,7 +242,7 @@ public class MessageComponents {
                     TextColor color = TextColor.fromHexString(hexColor);
                     currentComponentBuilder.color(color);
                 } catch (IllegalArgumentException e) {
-                    // Недійсне або нульове значення hexColor
+                	color(hexColor);
                 }
             }
             return this;
@@ -314,7 +313,7 @@ public class MessageComponents {
                 case "LIGHT_PURPLE": return NamedTextColor.LIGHT_PURPLE;
                 case "YELLOW": return NamedTextColor.YELLOW;
                 case "WHITE": return NamedTextColor.WHITE;
-                default: return null;
+                default: return NamedTextColor.WHITE;
             }
         }
         
