@@ -14,6 +14,7 @@
     <description>Library for minecraft plugins AnhyLibAPI</description>
       
     <build>
+		<finalName>AnhyLibAPI</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
