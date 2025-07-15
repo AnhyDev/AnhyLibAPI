@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import ink.anh.api.LibraryManager;
 import ink.anh.api.lingo.lang.LanguageManager;
+import ink.anh.api.utils.StringUtils;
 
 /**
  * Provides utilities for translating text using language management facilities.
@@ -104,7 +105,7 @@ public class Translator {
             newText.setLength(newText.length() - 1);
         }
 
-        return textModified ? newText.toString() : null;
+        return textModified ? StringUtils.colorize(newText.toString()) : null;
     }
 
     private static String[] extractLeadingPunctuation(String word) {

@@ -12,24 +12,48 @@ public class OtherUtils {
 
     /**
      * Retrieves the current version of the Minecraft server.
-     * The version is parsed and converted into a double for easy comparison.
      *
-     * @return The server version as a double, or 0 in case of a parsing error.
+     * @return The server version as a string, or 0 in case of a parsing error.
      */
-	public static double getCurrentServerVersion() {
-	    String versionString = Bukkit.getBukkitVersion().split("-")[0];
-	    String[] splitVersion = versionString.split("\\.");
+	public static String getCurrentServerVersion() {
+        String versionString = Bukkit.getBukkitVersion().split("-")[0];
+        String[] splitVersion = versionString.split("\\.");
 
-	    try {
-	        int major = Integer.parseInt(splitVersion[0]);
-	        int minor = splitVersion.length > 1 ? Integer.parseInt(splitVersion[1]) : 0;
-	        double version = major + minor / (minor >= 10 ? 100.0 : 10.0);
-	        return version;
-	    } catch (NumberFormatException e) {
-	        e.printStackTrace();
-	        return 0;
-	    }
-	}
+        try {
+            int major = Integer.parseInt(splitVersion[0]);
+            int minor = splitVersion.length > 1 ? Integer.parseInt(splitVersion[1]) : 0;
+            int patch = splitVersion.length > 2 ? Integer.parseInt(splitVersion[2]) : 0;
+            return major + "." + minor + "." + patch;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "0.0.0";
+        }
+    }
+
+    public static boolean isServerVersionLowerThan(String targetVersion) {
+        String currentVersion = getCurrentServerVersion();
+        String[] currentParts = currentVersion.split("\\.");
+        String[] targetParts = targetVersion.split("\\.");
+
+        try {
+            int currentMajor = Integer.parseInt(currentParts[0]);
+            int currentMinor = currentParts.length > 1 ? Integer.parseInt(currentParts[1]) : 0;
+            int currentPatch = currentParts.length > 2 ? Integer.parseInt(currentParts[2]) : 0;
+
+            int targetMajor = Integer.parseInt(targetParts[0]);
+            int targetMinor = targetParts.length > 1 ? Integer.parseInt(targetParts[1]) : 0;
+            int targetPatch = targetParts.length > 2 ? Integer.parseInt(targetParts[2]) : 0;
+
+            if (currentMajor < targetMajor) return true;
+            if (currentMajor > targetMajor) return false;
+            if (currentMinor < targetMinor) return true;
+            if (currentMinor > targetMinor) return false;
+            return currentPatch < targetPatch;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     /**
      * Compares the current server version with a specified version.
@@ -38,9 +62,9 @@ public class OtherUtils {
      * @return 0 if the current version is less than the specified version,
      *         1 if it's equal, and 2 if it's greater.
      */
-    public static int compareServerVersion(double versionToCompare) {
-        double currentVersion = getCurrentServerVersion();
-        if (currentVersion < versionToCompare) {
+    public static int compareServerVersion(String versionToCompare) {
+        String currentVersion = getCurrentServerVersion();
+        if (isServerVersionLowerThan(versionToCompare)) {
             return 0;
         } else if (currentVersion == versionToCompare) {
             return 1;
@@ -55,7 +79,7 @@ public class OtherUtils {
      * @param plugin The plugin instance used for logging.
      */
     public static void logCurrentServerVersion(Plugin plugin) {
-        double currentVersion = getCurrentServerVersion();
+        String currentVersion = getCurrentServerVersion();
         Logger.info(plugin, "Current server version: " + currentVersion);
     }
 }

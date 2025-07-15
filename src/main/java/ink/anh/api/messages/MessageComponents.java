@@ -110,10 +110,11 @@ public class MessageComponents {
          */
         public MessageBuilder content(String content) {
             applyCurrentComponent();
-            currentComponentBuilder = LegacyComponentSerializer.legacySection().deserialize(content).toBuilder();
+            LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
+            currentComponentBuilder = LEGACY.deserialize(content).toBuilder();
             return this;
         }
-
+        
         /**
          * Sets a hover message for the current text component.
          * Transforms Minecraft color codes from '&amp;' prefix to the section symbol prefix.S
@@ -222,7 +223,12 @@ public class MessageComponents {
          */
         public MessageBuilder color(String colorName) {
             if (colorName != null) {
-                NamedTextColor color = getColorFromName(colorName);
+            	NamedTextColor color = null;
+            	if (colorName.startsWith("&") || colorName.startsWith("§")) {
+            		color = getColorFromCode(colorName);
+            	} else {
+            		color = getColorFromName(colorName);
+            	}
                 if (color != null) {
                     currentComponentBuilder.color(color);
                 }
@@ -313,6 +319,56 @@ public class MessageComponents {
                 case "LIGHT_PURPLE": return NamedTextColor.LIGHT_PURPLE;
                 case "YELLOW": return NamedTextColor.YELLOW;
                 case "WHITE": return NamedTextColor.WHITE;
+                default: return NamedTextColor.WHITE;
+            }
+        }
+        
+        /**
+         * Converts a string representation of a color name to a {@link NamedTextColor} instance.
+         * Accepts predefined color names and returns the corresponding NamedTextColor.
+         *
+         * @param colorName The name of the color in string format. 
+         *                  Accepted values include standard Minecraft color names, e.g., "RED", "BLUE".
+         *                  The name is case-insensitive.
+         * @return The corresponding {@link NamedTextColor} instance, or {@code null} if no match is found.
+         */
+        private static NamedTextColor getColorFromCode(String colorName) {
+            if (colorName == null) {
+                return null;
+            }
+            switch (colorName.toUpperCase()) {
+                case "&0": return NamedTextColor.BLACK;
+                case "&1": return NamedTextColor.DARK_BLUE;
+                case "&2": return NamedTextColor.DARK_GREEN;
+                case "&3": return NamedTextColor.DARK_AQUA;
+                case "&4": return NamedTextColor.DARK_RED;
+                case "&5": return NamedTextColor.DARK_PURPLE;
+                case "&6": return NamedTextColor.GOLD;
+                case "&7": return NamedTextColor.GRAY;
+                case "&8": return NamedTextColor.DARK_GRAY;
+                case "&9": return NamedTextColor.BLUE;
+                case "&a": return NamedTextColor.GREEN;
+                case "&b": return NamedTextColor.AQUA;
+                case "&c": return NamedTextColor.RED;
+                case "&d": return NamedTextColor.LIGHT_PURPLE;
+                case "&e": return NamedTextColor.YELLOW;
+                case "&f": return NamedTextColor.WHITE;
+                case "§0": return NamedTextColor.BLACK;
+                case "§1": return NamedTextColor.DARK_BLUE;
+                case "§2": return NamedTextColor.DARK_GREEN;
+                case "§3": return NamedTextColor.DARK_AQUA;
+                case "§4": return NamedTextColor.DARK_RED;
+                case "§5": return NamedTextColor.DARK_PURPLE;
+                case "§6": return NamedTextColor.GOLD;
+                case "§7": return NamedTextColor.GRAY;
+                case "§8": return NamedTextColor.DARK_GRAY;
+                case "§9": return NamedTextColor.BLUE;
+                case "§a": return NamedTextColor.GREEN;
+                case "§b": return NamedTextColor.AQUA;
+                case "§c": return NamedTextColor.RED;
+                case "§d": return NamedTextColor.LIGHT_PURPLE;
+                case "§e": return NamedTextColor.YELLOW;
+                case "§f": return NamedTextColor.WHITE;
                 default: return NamedTextColor.WHITE;
             }
         }

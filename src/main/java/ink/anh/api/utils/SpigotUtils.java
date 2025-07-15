@@ -45,6 +45,8 @@ public class SpigotUtils {
                     } catch (NoSuchMethodError e) {
                         GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping();
                         // Registering custom type adapters
+                        double ver = OtherUtils.getCurrentServerVersion();
+                        if (ver < 1.21)
                         try {
                             gsonBuilder.registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
                                        .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
