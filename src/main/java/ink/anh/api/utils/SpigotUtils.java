@@ -1,125 +1,51 @@
 package ink.anh.api.utils;
 
-import java.lang.reflect.Field;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ItemTag;
-import net.md_5.bungee.api.chat.KeybindComponent;
-import net.md_5.bungee.api.chat.ScoreComponent;
-import net.md_5.bungee.api.chat.SelectorComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.TranslatableComponent;
-import net.md_5.bungee.api.chat.hover.content.Entity;
-import net.md_5.bungee.api.chat.hover.content.EntitySerializer;
-import net.md_5.bungee.api.chat.hover.content.Item;
-import net.md_5.bungee.api.chat.hover.content.ItemSerializer;
-import net.md_5.bungee.api.chat.hover.content.Text;
-import net.md_5.bungee.api.chat.hover.content.TextSerializer;
-import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.chat.KeybindComponentSerializer;
-import net.md_5.bungee.chat.ScoreComponentSerializer;
-import net.md_5.bungee.chat.SelectorComponentSerializer;
-import net.md_5.bungee.chat.TextComponentSerializer;
-import net.md_5.bungee.chat.TranslatableComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 /**
- * Utility class for handling serialization and comparison of BungeeCord's BaseComponents.
+ * Utility class for handling serialization and comparison of Adventure API Components.
  */
 public class SpigotUtils {
 
-    private static final Gson serializer;
-
-    static {
-        Gson temp = null;
-        try {
-            for (Field declaredField : ComponentSerializer.class.getDeclaredFields()) {
-                if (declaredField.getType() == Gson.class) {
-                    declaredField.setAccessible(true);
-                    temp = (Gson) declaredField.get(null);
-                    // Attempt to use the existing Gson instance or create a new one with custom adapters
-                    try {
-                        temp = temp.newBuilder().disableHtmlEscaping().create();
-                    } catch (NoSuchMethodError e) {
-                        GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping();
-                        // Registering custom type adapters
-                        double ver = OtherUtils.getCurrentServerVersion();
-                        if (ver < 1.21)
-                        try {
-                            gsonBuilder.registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
-                                       .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
-                                       .registerTypeAdapter(TranslatableComponent.class, new TranslatableComponentSerializer())
-                                       .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
-                                       .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
-                                       .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
-                                       .registerTypeAdapter(Entity.class, new EntitySerializer())
-                                       .registerTypeAdapter(Text.class, new TextSerializer())
-                                       .registerTypeAdapter(Item.class, new ItemSerializer())
-                                       .registerTypeAdapter(ItemTag.class, new ItemTag.Serializer());
-                        } catch (NoClassDefFoundError ignored) {
-                            // Some types might not be available on legacy servers
-                        }
-                        temp = gsonBuilder.create();
-                    }
-                    break;
-                }
-            }
-        } catch (Throwable e) {
-            // Log or handle the exception as needed
-        }
-        serializer = temp;
-    }
+    private static final GsonComponentSerializer serializer = GsonComponentSerializer.gson();
 
     /**
-     * Serializes BaseComponent or BaseComponent array to JSON using a custom Gson serializer.
+     * Serializes Adventure API Component to JSON using GsonComponentSerializer.
      * 
-     * @param components The BaseComponent(s) to serialize.
-     * @return JSON string representation of the components.
+     * @param component The Adventure Component to serialize.
+     * @return JSON string representation of the component.
      */
-    public static String serializeComponents(BaseComponent... components) {
+    public static String serializeComponents(Component component) {
         try {
-            if (components.length == 1) {
-                return serializer.toJson(components[0]);
-            } else {
-                return serializer.toJson(new TextComponent(components));
-            }
-        } catch (Throwable t) { 
-            // Fallback to the default ComponentSerializer if the custom Gson serializer fails
-            return ComponentSerializer.toString(components);
+            return serializer.serialize(component);
+        } catch (Throwable t) {
+            // Fallback to empty string if serialization fails
+            return "";
         }
     }
 
     /**
-     * Compares two arrays of BaseComponents for equality.
-     * It checks both the textual content and hover events.
+     * Compares two Adventure API Components for equality.
+     * It checks the serialized JSON representation of the components.
      * 
-     * @param a The first array of BaseComponents.
-     * @param b The second array of BaseComponents.
-     * @return True if the arrays are equal, false otherwise.
+     * @param a The first Adventure Component.
+     * @param b The second Adventure Component.
+     * @return True if the components are equal, false otherwise.
      */
-    @SuppressWarnings({"deprecation"})
-    public static boolean compareComponents(BaseComponent[] a, BaseComponent[] b) {
+    public static boolean compareComponents(Component a, Component b) {
         if (a == null && b != null || a != null && b == null) {
             return false;
         }
         if (a == null) {
             return true;
         }
-        if (a.length != b.length) {
+        try {
+            String jsonA = serializer.serialize(a);
+            String jsonB = serializer.serialize(b);
+            return jsonA.equals(jsonB);
+        } catch (Throwable t) {
             return false;
         }
-        for (int i = 0, length = a.length; i < length; i++) {
-            BaseComponent component = a[i];
-            BaseComponent other = b[i];
-            if (!component.toLegacyText().equals(other.toLegacyText())) {
-                return false;
-            } else if (component.getHoverEvent() != other.getHoverEvent() && component.getHoverEvent() != null
-                    && !compareComponents(component.getHoverEvent().getValue(), other.getHoverEvent().getValue())) {
-                return false;
-            }
-        }
-        return true;
     }
 }

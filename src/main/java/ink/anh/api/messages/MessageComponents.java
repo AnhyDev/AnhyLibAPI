@@ -2,6 +2,7 @@ package ink.anh.api.messages;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,8 +12,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import ink.anh.api.utils.StringUtils;
 
 /**
  * The MessageComponents class is utilized for creating and managing complex text components 
@@ -50,7 +49,7 @@ import ink.anh.api.utils.StringUtils;
  * @see net.kyori.adventure.text.Component
  */
 public class MessageComponents {
-    private Component component;
+    private final Component component;
 
     /**
      * Private constructor used to create an instance of MessageComponents.
@@ -78,7 +77,7 @@ public class MessageComponents {
      */
     public static class MessageBuilder {
         private final List<Component> components = new ArrayList<>();
-        private TextComponent.Builder currentComponentBuilder = Component.text();
+        private TextComponent.Builder currentComponentBuilder = null;
         
         private String hoverMessage;
         private Component hoverComponent;
@@ -103,27 +102,55 @@ public class MessageComponents {
 
         /**
          * Sets the content of the current text component.
-         * Transforms Minecraft color codes from '&amp;' prefix to the section symbol prefix.
+         * Transforms Minecraft color codes from '&' prefix to the section symbol prefix and applies them.
          *
          * @param content The text content to set.
          * @return The builder instance for chaining.
          */
         public MessageBuilder content(String content) {
-            applyCurrentComponent();
-            LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
-            currentComponentBuilder = LEGACY.deserialize(content).toBuilder();
+            if (content != null && !content.isEmpty()) {
+                applyCurrentComponent();
+                currentComponentBuilder = Component.text();
+                if (content.contains("§") || content.contains("&")) {
+                    LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+                    Component parsed = legacy.deserialize(content.replace('&', '§'));
+                    // Додаємо десеріалізований компонент напряму
+                    currentComponentBuilder.append(parsed);
+                } else {
+                    currentComponentBuilder.content(content);
+                }
+            }
             return this;
         }
         
         /**
+         * Sets a translatable component with the specified translation key and optional arguments.
+         *
+         * @param translationKey The translation key for the translatable component.
+         * @param args Optional arguments to be used in the translation.
+         * @return The builder instance for chaining.
+         */
+        public MessageBuilder translatable(String translationKey, Component... args) {
+            if (translationKey != null && !translationKey.isEmpty()) {
+                applyCurrentComponent();
+                currentComponentBuilder = Component.text();
+                TranslatableComponent translatable = Component.translatable(translationKey, args);
+                currentComponentBuilder.append(translatable);
+            }
+            return this;
+        }
+
+        /**
          * Sets a hover message for the current text component.
-         * Transforms Minecraft color codes from '&amp;' prefix to the section symbol prefix.S
+         * Transforms Minecraft color codes from '&' prefix to the section symbol prefix.
          *
          * @param hoverMessage The hover message text.
          * @return The builder instance for chaining.
          */
         public MessageBuilder hoverMessage(String hoverMessage) {
-            this.hoverMessage = StringUtils.colorize(hoverMessage);
+            if (hoverMessage != null && !hoverMessage.isEmpty()) {
+                this.hoverMessage = hoverMessage.replace('&', '§');
+            }
             return this;
         }
 
@@ -147,7 +174,7 @@ public class MessageComponents {
          * @return The builder instance for chaining.
          */
         public MessageBuilder showItem(HoverEvent.ShowItem showItemData) {
-            this.showItemEvent = HoverEvent.showItem(showItemData);
+            this.showItemEvent = showItemData != null ? HoverEvent.showItem(showItemData) : null;
             return this;
         }
 
@@ -158,7 +185,7 @@ public class MessageComponents {
          * @return The builder instance for chaining.
          */
         public MessageBuilder showEntity(HoverEvent.ShowEntity showEntityData) {
-            this.showEntityEvent = HoverEvent.showEntity(showEntityData);
+            this.showEntityEvent = showEntityData != null ? HoverEvent.showEntity(showEntityData) : null;
             return this;
         }
 
@@ -209,7 +236,7 @@ public class MessageComponents {
             this.clickValue = openUrl;
             return this;
         }
-        
+
         /**
          * Sets the color of the current text component using a color name.
          * Named colors are predefined and include:
@@ -222,13 +249,10 @@ public class MessageComponents {
          * @return The builder instance for chaining.
          */
         public MessageBuilder color(String colorName) {
-            if (colorName != null) {
-            	NamedTextColor color = null;
-            	if (colorName.startsWith("&") || colorName.startsWith("§")) {
-            		color = getColorFromCode(colorName);
-            	} else {
-            		color = getColorFromName(colorName);
-            	}
+            if (colorName != null && !colorName.isEmpty() && currentComponentBuilder != null) {
+                NamedTextColor color = colorName.startsWith("&") || colorName.startsWith("§") 
+                    ? getColorFromCode(colorName) 
+                    : getColorFromName(colorName);
                 if (color != null) {
                     currentComponentBuilder.color(color);
                 }
@@ -243,17 +267,17 @@ public class MessageComponents {
          * @return The builder instance for chaining.
          */
         public MessageBuilder hexColor(String hexColor) {
-            if (hexColor != null) {
+            if (hexColor != null && !hexColor.isEmpty() && currentComponentBuilder != null) {
                 try {
                     TextColor color = TextColor.fromHexString(hexColor);
                     currentComponentBuilder.color(color);
                 } catch (IllegalArgumentException e) {
-                	color(hexColor);
+                    color(hexColor);
                 }
             }
             return this;
         }
-        
+
         /**
          * Sets a text decoration for the current component.
          * Available decorations include:
@@ -269,7 +293,7 @@ public class MessageComponents {
          * @return The builder instance for chaining.
          */
         public MessageBuilder decoration(String decorationName, boolean flag) {
-            if (decorationName != null) {
+            if (decorationName != null && !decorationName.isEmpty() && currentComponentBuilder != null) {
                 TextDecoration decoration = getDecorationFromName(decorationName);
                 if (decoration != null) {
                     currentComponentBuilder.decoration(decoration, flag);
@@ -299,9 +323,7 @@ public class MessageComponents {
          * @return The corresponding {@link NamedTextColor} instance, or {@code null} if no match is found.
          */
         private NamedTextColor getColorFromName(String colorName) {
-            if (colorName == null) {
-                return null;
-            }
+            if (colorName == null) return null;
             switch (colorName.toUpperCase()) {
                 case "BLACK": return NamedTextColor.BLACK;
                 case "DARK_BLUE": return NamedTextColor.DARK_BLUE;
@@ -319,60 +341,40 @@ public class MessageComponents {
                 case "LIGHT_PURPLE": return NamedTextColor.LIGHT_PURPLE;
                 case "YELLOW": return NamedTextColor.YELLOW;
                 case "WHITE": return NamedTextColor.WHITE;
-                default: return NamedTextColor.WHITE;
+                default: return null;
             }
         }
-        
+
         /**
-         * Converts a string representation of a color name to a {@link NamedTextColor} instance.
-         * Accepts predefined color names and returns the corresponding NamedTextColor.
+         * Converts a string representation of a color code to a {@link NamedTextColor} instance.
+         * Accepts Minecraft color codes (e.g., "&c", "§c") and returns the corresponding NamedTextColor.
          *
-         * @param colorName The name of the color in string format. 
-         *                  Accepted values include standard Minecraft color names, e.g., "RED", "BLUE".
-         *                  The name is case-insensitive.
+         * @param colorName The color code in string format.
          * @return The corresponding {@link NamedTextColor} instance, or {@code null} if no match is found.
          */
-        private static NamedTextColor getColorFromCode(String colorName) {
-            if (colorName == null) {
-                return null;
-            }
+        private NamedTextColor getColorFromCode(String colorName) {
+            if (colorName == null) return null;
             switch (colorName.toUpperCase()) {
-                case "&0": return NamedTextColor.BLACK;
-                case "&1": return NamedTextColor.DARK_BLUE;
-                case "&2": return NamedTextColor.DARK_GREEN;
-                case "&3": return NamedTextColor.DARK_AQUA;
-                case "&4": return NamedTextColor.DARK_RED;
-                case "&5": return NamedTextColor.DARK_PURPLE;
-                case "&6": return NamedTextColor.GOLD;
-                case "&7": return NamedTextColor.GRAY;
-                case "&8": return NamedTextColor.DARK_GRAY;
-                case "&9": return NamedTextColor.BLUE;
-                case "&a": return NamedTextColor.GREEN;
-                case "&b": return NamedTextColor.AQUA;
-                case "&c": return NamedTextColor.RED;
-                case "&d": return NamedTextColor.LIGHT_PURPLE;
-                case "&e": return NamedTextColor.YELLOW;
-                case "&f": return NamedTextColor.WHITE;
-                case "§0": return NamedTextColor.BLACK;
-                case "§1": return NamedTextColor.DARK_BLUE;
-                case "§2": return NamedTextColor.DARK_GREEN;
-                case "§3": return NamedTextColor.DARK_AQUA;
-                case "§4": return NamedTextColor.DARK_RED;
-                case "§5": return NamedTextColor.DARK_PURPLE;
-                case "§6": return NamedTextColor.GOLD;
-                case "§7": return NamedTextColor.GRAY;
-                case "§8": return NamedTextColor.DARK_GRAY;
-                case "§9": return NamedTextColor.BLUE;
-                case "§a": return NamedTextColor.GREEN;
-                case "§b": return NamedTextColor.AQUA;
-                case "§c": return NamedTextColor.RED;
-                case "§d": return NamedTextColor.LIGHT_PURPLE;
-                case "§e": return NamedTextColor.YELLOW;
-                case "§f": return NamedTextColor.WHITE;
-                default: return NamedTextColor.WHITE;
+                case "&0": case "§0": return NamedTextColor.BLACK;
+                case "&1": case "§1": return NamedTextColor.DARK_BLUE;
+                case "&2": case "§2": return NamedTextColor.DARK_GREEN;
+                case "&3": case "§3": return NamedTextColor.DARK_AQUA;
+                case "&4": case "§4": return NamedTextColor.DARK_RED;
+                case "&5": case "§5": return NamedTextColor.DARK_PURPLE;
+                case "&6": case "§6": return NamedTextColor.GOLD;
+                case "&7": case "§7": return NamedTextColor.GRAY;
+                case "&8": case "§8": return NamedTextColor.DARK_GRAY;
+                case "&9": case "§9": return NamedTextColor.BLUE;
+                case "&A": case "§A": case "&a": case "§a": return NamedTextColor.GREEN;
+                case "&B": case "§B": case "&b": case "§b": return NamedTextColor.AQUA;
+                case "&C": case "§C": case "&c": case "§c": return NamedTextColor.RED;
+                case "&D": case "§D": case "&d": case "§d": return NamedTextColor.LIGHT_PURPLE;
+                case "&E": case "§E": case "&e": case "§e": return NamedTextColor.YELLOW;
+                case "&F": case "§F": case "&f": case "§f": return NamedTextColor.WHITE;
+                default: return null;
             }
         }
-        
+
         /**
          * Converts a string representation of a text decoration to a {@link TextDecoration} instance.
          * Accepts predefined decoration names and returns the corresponding TextDecoration.
@@ -383,23 +385,14 @@ public class MessageComponents {
          * @return The corresponding {@link TextDecoration} instance, or {@code null} if no match is found.
          */
         private TextDecoration getDecorationFromName(String decorationName) {
-            if (decorationName == null) {
-                return null;
-            }
-            String upperDecorationName = decorationName.toUpperCase();
-            switch (upperDecorationName) {
-                case "BOLD":
-                    return TextDecoration.BOLD;
-                case "ITALIC":
-                    return TextDecoration.ITALIC;
-                case "UNDERLINED":
-                    return TextDecoration.UNDERLINED;
-                case "STRIKETHROUGH":
-                    return TextDecoration.STRIKETHROUGH;
-                case "OBFUSCATED":
-                    return TextDecoration.OBFUSCATED;
-                default:
-                    return null;
+            if (decorationName == null) return null;
+            switch (decorationName.toUpperCase()) {
+                case "BOLD": return TextDecoration.BOLD;
+                case "ITALIC": return TextDecoration.ITALIC;
+                case "UNDERLINED": return TextDecoration.UNDERLINED;
+                case "STRIKETHROUGH": return TextDecoration.STRIKETHROUGH;
+                case "OBFUSCATED": return TextDecoration.OBFUSCATED;
+                default: return null;
             }
         }
 
@@ -408,7 +401,7 @@ public class MessageComponents {
          */
         private void applyCurrentComponent() {
             if (currentComponentBuilder != null) {
-            	if (hoverComponent != null) {
+                if (hoverComponent != null) {
                     currentComponentBuilder.hoverEvent(HoverEvent.showText(hoverComponent));
                     hoverComponent = null;
                 } else if (showItemEvent != null) {
@@ -417,12 +410,13 @@ public class MessageComponents {
                 } else if (showEntityEvent != null) {
                     currentComponentBuilder.hoverEvent(showEntityEvent);
                     showEntityEvent = null;
-                } else if (hoverMessage != null) {
-                    currentComponentBuilder.hoverEvent(HoverEvent.showText(Component.text(hoverMessage)));
+                } else if (hoverMessage != null && !hoverMessage.isEmpty()) {
+                    LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+                    currentComponentBuilder.hoverEvent(HoverEvent.showText(legacy.deserialize(hoverMessage)));
                     hoverMessage = null;
                 }
-            	
-                if (clickAction != null) {
+
+                if (clickAction != null && clickValue != null) {
                     switch (clickAction) {
                         case "copyToClipboard":
                             currentComponentBuilder.clickEvent(ClickEvent.copyToClipboard(clickValue));
@@ -441,11 +435,12 @@ public class MessageComponents {
                     clickValue = null;
                 }
 
-                if (!currentComponentBuilder.build().content().isEmpty()) {
-                    components.add(currentComponentBuilder.build());
+                Component built = currentComponentBuilder.build();
+                if (!built.equals(Component.empty())) {
+                    components.add(built);
+                } else {
                 }
-
-                currentComponentBuilder = Component.text();
+                currentComponentBuilder = null;
             }
         }
 
@@ -457,12 +452,18 @@ public class MessageComponents {
          */
         public MessageComponents build() {
             applyCurrentComponent();
+            if (components.isEmpty()) {
+                return new MessageComponents(Component.empty());
+            }
+            if (components.size() == 1) {
+                return new MessageComponents(components.get(0));
+            }
             TextComponent.Builder builder = Component.text();
             for (Component comp : components) {
                 builder.append(comp);
             }
-            // Передаємо побудований компонент в конструктор MessageComponents
-            return new MessageComponents(builder.build());
+            Component finalComponent = builder.build();
+            return new MessageComponents(finalComponent);
         }
     }
 

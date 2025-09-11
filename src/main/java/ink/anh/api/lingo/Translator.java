@@ -54,7 +54,8 @@ public class Translator {
         }
         
         String newText = processText(langMan, text, langs);
-        return newText != null ? newText : text;
+        String finalText = newText != null ? newText : text;
+        return StringUtils.colorize(finalText);
     }
 
     /**
@@ -105,7 +106,7 @@ public class Translator {
             newText.setLength(newText.length() - 1);
         }
 
-        return textModified ? StringUtils.colorize(newText.toString()) : null;
+        return textModified ? newText.toString() : null;
     }
 
     private static String[] extractLeadingPunctuation(String word) {
@@ -113,7 +114,7 @@ public class Translator {
             return new String[] {"", word};
         }
 
-        Pattern pattern = Pattern.compile("^((?:[&§][\\da-fA-Fk-oK-OrR]|\\p{Punct})+)");
+        Pattern pattern = Pattern.compile("^((?:[&§][\\da-fA-Fk-oK-OrRxX]|\\p{Punct})+)");
         Matcher matcher = pattern.matcher(word);
 
         String leadingPunctuation = "";
@@ -129,7 +130,8 @@ public class Translator {
         if (word.length() < 5) {
             return new String[] {"", word};
         }
-        Pattern pattern = Pattern.compile("((?:[&§][\\da-fA-Fk-oK-OrR]|\\p{Punct})+$)");
+        Pattern pattern = Pattern.compile("((?:[&§][\\da-fA-Fk-oK-OrRxX]|\\p{Punct})+$)");
+        
         Matcher matcher = pattern.matcher(word);
 
         String trailingPunctuation = "";

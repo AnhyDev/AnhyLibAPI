@@ -5,10 +5,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import ink.anh.api.AnhyLibAPI;
 import ink.anh.api.LibraryManager;
 import ink.anh.api.lingo.Translator;
 import ink.anh.api.utils.LangUtils;
+import ink.anh.api.utils.OtherUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -188,14 +188,16 @@ public class Messenger {
     private static void sendComponent(Plugin plugin, CommandSender sender, Component messageComponent, String message) {
     	if (sender instanceof Player) {
     		Player player = (Player) sender;
-            if (AnhyLibAPI.getInstance().getCurrentVersion() < 1.19 && (player instanceof Audience)) {
-            	if (sender instanceof Audience) {
-                	Audience audience = (Audience) player;
-                	audience.sendMessage(messageComponent);
-            	} else {
-            		Bukkit.getScheduler().runTask(plugin, () -> {
-            			player.sendMessage(message);
-            		});
+            if (OtherUtils.isServerVersionHigher("1.19")) {
+            	if (player instanceof Audience) {
+            		if (sender instanceof Audience) {
+                    	Audience audience = (Audience) player;
+                    	audience.sendMessage(messageComponent);
+                	} else {
+                		Bukkit.getScheduler().runTask(plugin, () -> {
+                			player.sendMessage(message);
+                		});
+                	}
             	}
             } else {
             	BukkitAudiences bukkitAudiences = BukkitAudiences.create(plugin);
@@ -231,10 +233,23 @@ public class Messenger {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Component actionBarComponent = messageComponent.getComponent();
-            BukkitAudiences bukkitAudiences = BukkitAudiences.create(plugin);
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                bukkitAudiences.player(player).sendActionBar(actionBarComponent);
-            });
+            if (OtherUtils.isServerVersionHigher("1.19")) {
+            	if (player instanceof Audience) {
+            		if (sender instanceof Audience) {
+            			Audience audience = (Audience) player;
+            			audience.sendActionBar(actionBarComponent);
+            		} else {
+            			Bukkit.getScheduler().runTask(plugin, () -> {
+                			player.sendMessage(message);
+                		});
+            		}
+            	}
+            } else {
+            	BukkitAudiences bukkitAudiences = BukkitAudiences.create(plugin);
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    bukkitAudiences.player(player).sendActionBar(actionBarComponent);
+                });
+            }
         } else {
             sender.sendMessage("Action bar messages can only be sent to players.");
         }
@@ -248,13 +263,23 @@ public class Messenger {
      * @param subtitleComponent The MessageComponents instance containing the subtitle text component.
      */
     public static void sendTitle(Plugin plugin, CommandSender sender, MessageComponents titleComponent, MessageComponents subtitleComponent) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Title title = Title.title(titleComponent.getComponent(), subtitleComponent.getComponent());
-            BukkitAudiences bukkitAudiences = BukkitAudiences.create(plugin);
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                bukkitAudiences.player(player).showTitle(title);
-            });
+    	if (sender instanceof Player) {
+    		Player player = (Player) sender;
+    		Title title = Title.title(titleComponent.getComponent(), subtitleComponent.getComponent());
+    		if (OtherUtils.isServerVersionHigher("1.19")) {
+    			if (player instanceof Audience) {
+    				if (sender instanceof Audience) {
+    					Audience audience = (Audience) player;
+    					audience.showTitle(title);
+    				}
+    			}
+    		} else {
+    			BukkitAudiences bukkitAudiences = BukkitAudiences.create(plugin);
+    			Bukkit.getScheduler().runTask(plugin, () -> {
+                    bukkitAudiences.player(player).showTitle(title);
+                });
+    		}
+    	
         } else {
             sender.sendMessage("Titles can only be sent to players.");
         }

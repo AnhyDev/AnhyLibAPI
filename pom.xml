@@ -122,14 +122,20 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.18.0</version>
+            <version>4.23.0</version>
         </dependency>
+        
+         <dependency>
+    		<groupId>net.kyori</groupId>
+   			<artifactId>adventure-text-serializer-gson</artifactId>
+    		<version>4.23.0</version>
+ 		</dependency>
         
         <!-- https://mvnrepository.com/artifact/net.kyori/adventure-platform-bukkit -->
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.3.3</version>
+            <version>4.4.0</version>
         </dependency>
         
         <dependency>

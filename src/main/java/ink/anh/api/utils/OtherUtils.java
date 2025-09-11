@@ -16,61 +16,69 @@ public class OtherUtils {
      * @return The server version as a string, or 0 in case of a parsing error.
      */
 	public static String getCurrentServerVersion() {
-        String versionString = Bukkit.getBukkitVersion().split("-")[0];
-        String[] splitVersion = versionString.split("\\.");
-
-        try {
-            int major = Integer.parseInt(splitVersion[0]);
-            int minor = splitVersion.length > 1 ? Integer.parseInt(splitVersion[1]) : 0;
-            int patch = splitVersion.length > 2 ? Integer.parseInt(splitVersion[2]) : 0;
-            return major + "." + minor + "." + patch;
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return "0.0.0";
+        String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        
+        if (!packageName.equals("org.bukkit.craftbukkit")) {
+            String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+            if (version.matches("v\\d+_\\d+_R\\d+")) {
+                return version;
+            }
         }
+        
+        String bukkitVersion = Bukkit.getServer().getBukkitVersion().replaceAll("-R0.1-SNAPSHOT", "");
+        String[] parts = bukkitVersion.split("\\.");
+        
+        if (parts.length < 2) {
+            return "v1_0_R0";
+        }
+        
+        String nmsVersion = "v" + parts[0] + "_" + parts[1] + "_R" + (parts.length > 2 ? Integer.parseInt(parts[2]) - 1 : 0);
+        
+        if (nmsVersion.equals("v1_21_R6")) {
+            nmsVersion = "v1_21_R5";
+        }
+        
+        return nmsVersion;
     }
 
-    public static boolean isServerVersionLowerThan(String targetVersion) {
-        String currentVersion = getCurrentServerVersion();
-        String[] currentParts = currentVersion.split("\\.");
+    public static String getCurrentVersion() {
+        String bukkitVersion = Bukkit.getServer().getBukkitVersion().replaceAll("-R0.1-SNAPSHOT", "");
+        String[] parts = bukkitVersion.split("\\.");
+        
+        if (parts.length < 2) {
+            return "1.0.0";
+        }
+        
+        String major = parts[0];
+        String minor = parts[1];
+        String patch = parts.length > 2 ? parts[2] : "0";
+        
+        return major + "." + minor + "." + patch;
+    }
+
+    public static boolean isServerVersionHigher(String targetVersion) {
+        String serverVersion = getCurrentVersion();
+        
+        // Розбиваємо версії на частини
+        String[] serverParts = serverVersion.split("\\.");
         String[] targetParts = targetVersion.split("\\.");
-
-        try {
-            int currentMajor = Integer.parseInt(currentParts[0]);
-            int currentMinor = currentParts.length > 1 ? Integer.parseInt(currentParts[1]) : 0;
-            int currentPatch = currentParts.length > 2 ? Integer.parseInt(currentParts[2]) : 0;
-
-            int targetMajor = Integer.parseInt(targetParts[0]);
-            int targetMinor = targetParts.length > 1 ? Integer.parseInt(targetParts[1]) : 0;
-            int targetPatch = targetParts.length > 2 ? Integer.parseInt(targetParts[2]) : 0;
-
-            if (currentMajor < targetMajor) return true;
-            if (currentMajor > targetMajor) return false;
-            if (currentMinor < targetMinor) return true;
-            if (currentMinor > targetMinor) return false;
-            return currentPatch < targetPatch;
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Compares the current server version with a specified version.
-     *
-     * @param versionToCompare The version to compare against the current server version.
-     * @return 0 if the current version is less than the specified version,
-     *         1 if it's equal, and 2 if it's greater.
-     */
-    public static int compareServerVersion(String versionToCompare) {
-        String currentVersion = getCurrentServerVersion();
-        if (isServerVersionLowerThan(versionToCompare)) {
-            return 0;
-        } else if (currentVersion == versionToCompare) {
-            return 1;
-        } else {
-            return 2;
-        }
+        
+        int serverMajor = Integer.parseInt(serverParts[0]);
+        int serverMinor = serverParts.length > 1 ? Integer.parseInt(serverParts[1]) : 0;
+        int serverPatch = serverParts.length > 2 ? Integer.parseInt(serverParts[2]) : 0;
+        
+        int targetMajor = Integer.parseInt(targetParts[0]);
+        int targetMinor = targetParts.length > 1 ? Integer.parseInt(targetParts[1]) : 0;
+        int targetPatch = targetParts.length > 2 ? Integer.parseInt(targetParts[2]) : 0;
+        
+        // Порівнюємо основні версії
+        if (serverMajor > targetMajor) return true;
+        if (serverMajor < targetMajor) return false;
+        if (serverMinor > targetMinor) return true;
+        if (serverMinor < targetMinor) return false;
+        
+        // Порівнюємо патч
+        return serverPatch > targetPatch;
     }
 
     /**

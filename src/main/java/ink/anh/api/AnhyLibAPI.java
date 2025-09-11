@@ -22,7 +22,7 @@ public class AnhyLibAPI extends JavaPlugin {
     
     private Map<UUID, Map<String, Object>> globalDataMap;
    
-    private double currentVersion;
+    private String currentVersion;
 
     /**
      * Retrieves the active instance of the AnhyLibAPI plugin.
@@ -58,7 +58,7 @@ public class AnhyLibAPI extends JavaPlugin {
      *
      * @return The current server version as a double.
      */
-	public double getCurrentVersion() {
+	public String getCurrentVersion() {
 		return currentVersion;
 	}
 
