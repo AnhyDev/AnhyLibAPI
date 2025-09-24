@@ -23,9 +23,6 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
-                    <jdkToolchain>
-                    	<version>21</version>
-               		</jdkToolchain>
                 </configuration>
             </plugin>
             <plugin>
